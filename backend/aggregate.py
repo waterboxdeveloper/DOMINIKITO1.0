@@ -27,21 +27,6 @@ _DIM_LABEL = {
     "riesgo_cautela": "exploración",
 }
 
-_DIM_ICON = {
-    "regulacion_emocional": "🌊", "confianza_apego": "🤝", "honestidad": "💎",
-    "empatia": "💗", "autonomia": "🧭", "riesgo_cautela": "🚀",
-}
-
-# Ancla teórica legible por dimensión (psicologia.md §2).
-_DIM_ANCHOR = {
-    "regulacion_emocional": "CASEL · autorregulación · Erikson",
-    "confianza_apego": "Bowlby · apego · CASEL relaciones",
-    "honestidad": "CASEL · decisión responsable · Ma",
-    "empatia": "CASEL · conciencia social · Ma altruismo",
-    "autonomia": "Erikson · autonomía / iniciativa",
-    "riesgo_cautela": "Erikson · iniciativa (eje secundario)",
-}
-
 # Etiquetas NEUTRAS de cada polo (descriptivas, sin juicio clínico).
 _POLE_LABEL = {
     "regulado": "mantener la calma",

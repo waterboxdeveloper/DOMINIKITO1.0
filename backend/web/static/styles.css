@@ -365,3 +365,456 @@ body.dev .devlog{display:block}
   flex: 1;
 }
 
+/* Dashboard Premium "Mamalón" */
+
+.dash-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 18px 0 24px;
+}
+
+.overview-item {
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 20px;
+  padding: 16px 20px;
+  box-shadow: 0 6px 0 rgba(46, 22, 143, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.overview-item .label {
+  font-family: 'Baloo 2', cursive;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--lila);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.overview-item .val {
+  font-family: 'Baloo 2', cursive;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.overview-item .sub {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+/* Badges de alerta en resumen */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  font-family: 'Baloo 2', cursive;
+  font-weight: 800;
+  font-size: 14px;
+  border-radius: 12px;
+  border: 2px solid var(--ink);
+}
+.badge-green { background: #E6FBF0; color: #107C41; }
+.badge-orange { background: #FFF2DA; color: #A6632A; }
+.badge-red { background: #FFEDF2; color: #D12B60; }
+
+/* Grid de dimensiones */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Tarjeta de dimensión */
+.dash-card {
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 0 8px 0 rgba(46, 22, 143, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 0 rgba(46, 22, 143, 0.12);
+}
+
+.dash-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-bottom: 2px dashed rgba(46, 22, 143, 0.1);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.dash-card-icon {
+  font-size: 32px;
+}
+
+.dash-card-title-box {
+  flex: 1;
+}
+
+.dash-card-title-box h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 2px 0;
+}
+
+.anchor-ref {
+  display: block;
+  font-size: 11px;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.dash-card .dash-n {
+  font-size: 13px;
+  font-weight: 800;
+  background: var(--mist);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--ink);
+  white-space: nowrap;
+}
+
+.dash-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Gráfico de barra segmentada */
+.distribution-bar {
+  display: flex;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 12px 0;
+  background: #fff;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.dist-seg {
+  display: block;
+  height: 100%;
+  border-right: 1px solid var(--ink);
+  transition: width 0.3s ease;
+}
+
+.dist-seg:last-child {
+  border-right: none;
+}
+
+/* Leyenda con colores */
+.dist-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.legend-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  flex: 1;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.legend-val {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* Globito de resumen */
+.summary-box {
+  background: var(--cream);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  padding: 10px 14px;
+  position: relative;
+  margin-top: 8px;
+  box-shadow: 0 4px 0 rgba(46, 22, 143, 0.05);
+}
+
+.dash-sum {
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* Alertas de dimensión */
+.alert-badge-container {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.alert-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--ink);
+  font-family: 'Baloo 2', cursive;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.watch-tag {
+  background: #FFF2DA;
+  color: #A6632A;
+}
+
+.elevated-tag {
+  background: #FFEDF2;
+  color: #D12B60;
+}
+
+.alert-tag .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+
+.alert-tag .dot.pulse {
+  animation: pulse-dot 1.2s infinite alternate;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px currentColor; }
+}
+
+/* Bordes y sombras por alerta */
+.card-alert-watch {
+  border-color: var(--orange);
+  box-shadow: 0 8px 0 var(--orange);
+}
+.card-alert-watch:hover {
+  box-shadow: 0 12px 18px rgba(255, 157, 26, 0.22);
+}
+
+.card-alert-elevated {
+  border-color: var(--pink);
+  box-shadow: 0 8px 0 var(--pink);
+  animation: elevated-glow 2.5s infinite alternate;
+}
+
+@keyframes elevated-glow {
+  0% { box-shadow: 0 8px 0 var(--pink); }
+  100% { box-shadow: 0 8px 0 var(--pink), 0 0 14px rgba(255, 123, 174, 0.4); }
+}
+
+/* Sembrando datos (pendiente) */
+.dash-card-pending {
+  opacity: 0.85;
+}
+.pending-box {
+  text-align: center;
+  padding: 16px 10px;
+}
+.pending-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+.pending-box h4 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 18px;
+  color: var(--lila);
+  margin: 0 0 6px 0;
+}
+.pending-box p {
+  font-size: 13px;
+  line-height: 1.35;
+  margin: 0 0 14px 0;
+  opacity: 0.7;
+}
+.pending-progress-bar {
+  height: 10px;
+  background: var(--mist);
+  border: 1.5px solid var(--ink);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.pending-progress-fill {
+  height: 100%;
+  background: var(--lila);
+}
+.pending-ratio {
+  font-size: 12px;
+  font-weight: 800;
+  opacity: 0.6;
+}
+
+/* Footer y Fundamento científico colapsable */
+.dash-card-footer {
+  margin-top: 14px;
+  border-top: 1px solid rgba(46, 22, 143, 0.08);
+  padding-top: 10px;
+}
+
+.btn-toggle-science {
+  background: none;
+  border: none;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--purple);
+  cursor: pointer;
+  padding: 4px 0;
+}
+.btn-toggle-science:hover {
+  text-decoration: underline;
+}
+
+.science-detail-box {
+  background: var(--mist);
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ink);
+  animation: slideDown 0.25s ease-out;
+}
+.science-detail-box p {
+  margin: 0 0 6px 0;
+}
+.science-detail-box small {
+  display: block;
+  opacity: 0.7;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Directorio de derivación clínica */
+.clinical-handoff {
+  background: var(--lila-soft);
+  border: 2.5px solid var(--ink);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 8px 0 rgba(46, 22, 143, 0.1);
+  margin-bottom: 24px;
+}
+
+.handoff-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 2px dashed var(--ink);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.handoff-icon {
+  font-size: 42px;
+}
+
+.handoff-header h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+.handoff-header p {
+  margin: 2px 0 0 0;
+  font-size: 14px;
+}
+
+.handoff-body {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.handoff-body b {
+  color: var(--ink);
+}
+
+.clinical-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.clinical-tab {
+  background: #fff;
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.clinical-tab h5 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--purple);
+  margin: 0 0 8px 0;
+}
+
+.clinical-tab p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+.clinical-tab ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+.clinical-tab li {
+  margin-bottom: 4px;
+}
