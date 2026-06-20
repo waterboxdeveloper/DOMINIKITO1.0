@@ -36,7 +36,7 @@ source .venv/bin/activate
 python seed_demo.py          # siembra un niño "Demo Dominik" con decisiones de ejemplo
 python api.py                # levanta la app
 ```
-Abre **http://127.0.0.1:8080** → botón **📊 Dashboard** (arriba a la izquierda) → tu PIN →
+Abre **http://127.0.0.1:8080/app** → botón **📊 Dashboard** (arriba a la izquierda) → tu PIN →
 elige **"Demo Dominik"** → deberías ver tendencias por dimensión.
 
 > Si no configuras Supabase, la app **igual funciona** (cuento, voz, imágenes); simplemente no

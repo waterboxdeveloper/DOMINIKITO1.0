@@ -44,6 +44,7 @@ textarea{resize:vertical;min-height:60px}
 .hint{font-size:12px;opacity:.6;margin:3px 2px 0}
 
 .btn{
+  display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
   font-family:'Baloo 2',cursive;font-weight:800;font-size:20px;cursor:pointer;color:#fff;
   border:3px solid var(--ink);border-radius:18px;padding:12px 18px;background:var(--blue);
   box-shadow:0 5px 0 rgba(33,54,79,.25);transition:transform .07s,box-shadow .07s;
@@ -117,3 +118,129 @@ body.dev .devlog{display:block}
 .err{color:var(--red);font-weight:800;text-align:center;margin-top:10px}
 .progress{display:inline-block;background:var(--purple);color:#fff;font-family:'Baloo 2',cursive;
   border:2px solid var(--ink);border-radius:14px;padding:4px 14px;margin:4px auto 0}
+
+/* ---- landing publica ---- */
+.landing-body,.login-body{min-height:100vh;background:var(--cream);overflow-x:hidden}
+.landing-shell{width:min(1120px,100%);margin:0 auto;padding:18px 18px 54px}
+.landing-nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:4px 0 10px}
+.landing-brand{display:inline-flex;align-items:center;text-decoration:none;color:var(--ink)}
+.landing-brand img{width:min(230px,52vw);height:auto;display:block}
+.wordmark.mini{font-size:34px;color:var(--purple)}
+.nav-link{font-family:'Baloo 2',cursive;font-weight:800;color:var(--ink);text-decoration:none;
+  background:#fff;border:2px solid var(--ink);border-radius:16px;padding:8px 14px;box-shadow:0 4px 0 rgba(46,22,143,.14)}
+.landing-hero{min-height:68vh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);
+  gap:28px;align-items:center;padding:26px 0 18px}
+.hero-copy{max-width:590px}
+.eyebrow{display:inline-block;margin:0 0 10px;color:var(--purple);font-size:16px;font-weight:800;
+  background:#fff;border:2px solid var(--ink);border-radius:999px;padding:5px 12px}
+.landing-hero h1{font-family:'Baloo 2',cursive;font-size:clamp(58px,11vw,118px);line-height:.9;
+  color:var(--purple);margin:0 0 12px}
+.hero-text{font-size:clamp(20px,2.6vw,30px);line-height:1.22;margin:0 0 24px;max-width:620px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-art{min-height:390px;position:relative;display:flex;align-items:center;justify-content:center}
+.hero-art:before{content:"";position:absolute;inset:34px 10px 20px;border:3px solid var(--ink);
+  border-radius:28px;background:#fff;box-shadow:0 10px 0 rgba(46,22,143,.13);transform:rotate(-2deg)}
+.hero-art img{position:relative;z-index:1;width:min(360px,82%);height:auto;
+  filter:drop-shadow(0 10px 0 rgba(46,22,143,.13));animation:floaty 3.8s ease-in-out infinite}
+.hero-orbit{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;width:58px;height:58px;
+  border:2px solid var(--ink);border-radius:50%;background:#fff;font-size:28px;box-shadow:0 5px 0 rgba(46,22,143,.12)}
+.star-one{top:36px;right:42px}.star-two{left:34px;top:118px}.star-three{right:28px;bottom:54px}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.landing-band{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:12px 0 28px}
+.feature-tile{background:#fff;border:3px solid var(--ink);border-radius:22px;padding:18px;box-shadow:0 7px 0 rgba(46,22,143,.13)}
+.feature-tile span{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;
+  background:var(--yellow);border:2px solid var(--ink);font-family:'Baloo 2',cursive;font-size:22px}
+.feature-tile h2{font-family:'Baloo 2',cursive;font-size:25px;margin:12px 0 4px;color:var(--purple)}
+.feature-tile p{margin:0;font-size:16px;line-height:1.38}
+.landing-proof{display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--lila-soft);
+  border:3px solid var(--ink);border-radius:24px;padding:18px 20px;box-shadow:0 7px 0 rgba(46,22,143,.13)}
+.landing-proof p{font-size:19px;line-height:1.35;margin:0;max-width:720px}
+
+/* ---- login temporal para auth ---- */
+.login-shell{min-height:100vh;width:min(560px,100%);margin:0 auto;padding:34px 18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+.login-logo{width:min(320px,78%);height:auto;margin:0 auto 18px}
+.login-card{width:100%;text-align:center}
+.login-card h1{font-family:'Baloo 2',cursive;color:var(--purple);font-size:42px;line-height:1;margin:4px 0 10px}
+.login-card .actions{justify-content:center}
+
+@media (max-width:760px){
+  .landing-shell{padding:14px 14px 42px}
+  .landing-hero{min-height:auto;grid-template-columns:1fr;gap:8px;padding-top:20px}
+  .hero-art{min-height:250px;order:-1}
+  .hero-art:before{inset:22px 28px 12px;border-radius:24px}
+  .hero-orbit{width:46px;height:46px;font-size:22px}
+  .star-one{top:18px;right:46px}.star-two{left:42px;top:82px}.star-three{right:34px;bottom:24px}
+  .landing-band{grid-template-columns:1fr}
+  .landing-proof{align-items:flex-start;flex-direction:column}
+  .landing-hero h1{font-size:64px}
+}
+
+/* Sincronización audio-texto (resaltado) */
+.word-span {
+  transition: background-color 0.12s ease, color 0.12s ease;
+  border-radius: 4px;
+  padding: 1px 3px;
+  margin: -1px -3px;
+  display: inline-block;
+}
+.word-span.highlight {
+  background-color: var(--yellow);
+  color: var(--ink);
+}
+
+/* Libro y paginación */
+.book-page {
+  display: none;
+}
+.book-page.active {
+  display: block;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+.book-page.fade-out {
+  display: block;
+  animation: fadeOut 0.4s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+.book-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  gap: 8px;
+}
+.book-nav .btn {
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 16px;
+  flex: 0 1 auto;
+  min-width: 90px;
+  text-align: center;
+}
+.book-nav .btn.read {
+  flex: 1 0 auto;
+  background: var(--purple);
+}
+.page-indicator {
+  font-family: 'Baloo 2', cursive;
+  font-size: 16px;
+  color: var(--blue-deep);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.btn:disabled, .opt:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}

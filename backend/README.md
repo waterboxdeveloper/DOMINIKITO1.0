@@ -36,6 +36,9 @@ Regenerar el evalset si cambian los casos: `backend/.venv/bin/python backend/eva
 | `profile.py` | Deriva la lista de exclusión desde los recuerdos de los padres. |
 | `agents/narrador/` | Agente 1: `agent.py` (LlmAgent, output_schema=Story) + `prompts.py`. |
 | `narrador_runner.py` | Corre el Narrador en aislamiento (InMemoryRunner) → `Story`. |
+| `api.py` | FastAPI: API del producto, landing `/`, app `/app`, shell auth `/login`, assets estáticos. |
+| `web/pages/` | `landing.html`, `app.html`, `login.html`. |
+| `web/static/` | `app.js`, `styles.css`. |
 | `tests/` | Deterministas (sin key) + en vivo (con key). |
 | `eval/` | Casos + evalset nativo de ADK con rúbricas. |
 

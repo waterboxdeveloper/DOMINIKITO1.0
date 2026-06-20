@@ -21,10 +21,14 @@ deriva a profesionales.
 ## Arquitectura (lo que está implementado)
 
 ```
-Navegador (web/ estático)  ──fetch──▶  FastAPI (backend/api.py)
-  crear cuento · lector                   /api/story/start · /api/story/next   → agentes (ADK/Gemini)
-  preguntas como botones                  /api/tts · /api/voices               → ElevenLabs
-  "🔊 Léemelo" · "modo papás"             imágenes embebidas (data-URI)        → Nano Banana
+Landing pública (/) ──CTA──▶ /login?next=/app ──▶ App Dominikito (/app)
+                                                     │
+                                                     fetch
+                                                     ▼
+FastAPI (backend/api.py)                         /api/story/start · /api/story/next   → agentes (ADK/Gemini)
+                                                 /api/tts · /api/voices               → ElevenLabs
+                                                 imágenes embebidas (data-URI)        → Nano Banana
+                                                 /api/decision · /api/dashboard       → Supabase
 ```
 
 - **Backend / agentes:** Python + **Google ADK** (Gemini). Agente `cuentista` (narrador interactivo
@@ -32,7 +36,9 @@ Navegador (web/ estático)  ──fetch──▶  FastAPI (backend/api.py)
   contra la taxonomía y enriquece.
 - **Imágenes:** `gemini-2.5-flash-image` (Nano Banana), con estilo de marca.
 - **Voz:** ElevenLabs `eleven_multilingual_v2`, bajo demanda.
-- **Frontend:** estático (HTML/CSS/JS) servido por el mismo FastAPI. (Migrable a Next.js a futuro.)
+- **Frontend:** estático (HTML/CSS/JS) servido por el mismo FastAPI. `/` es landing pública, `/app`
+  es el producto, `/login?next=/app` es el shell preparado para Google Auth. (Migrable a Next.js a
+  futuro.)
 
 ## Estructura
 
@@ -51,7 +57,7 @@ cuentos/
     ├── api.py           · FastAPI: endpoints + sirve web/
     ├── agents/          · cuentista, dilemas, narrador (ADK)
     ├── *.py             · taxonomy, schemas, runners, post-procesado, images, tts, ...
-    ├── web/             · interfaz (index.html, styles.css, app.js, assets/)
+    ├── web/             · landing, app, static/ y assets/
     ├── eval/            · evalsets ADK + fixtures
     ├── tests/           · pytest (deterministas + en vivo)
     ├── requirements.txt · dependencias
@@ -67,6 +73,11 @@ python3.13 -m venv .venv
 cp .env.example .env        # y rellena tus claves (ver tabla abajo)
 .venv/bin/python api.py     # → http://127.0.0.1:8080
 ```
+
+Rutas principales:
+- `http://127.0.0.1:8080/` → landing pública.
+- `http://127.0.0.1:8080/login?next=/app` → placeholder temporal de Google Auth.
+- `http://127.0.0.1:8080/app` → experiencia actual: crear cuento, lector, dashboard con PIN.
 
 ### Variables de entorno
 | Variable | Requerida | Para qué |
@@ -96,5 +107,7 @@ Nunca diagnostica · nunca da consejo psicológico · dimensiones ancladas a lit
 separación de motores (genera dilema ≠ clasifica ≠ agrega) · el niño nunca siente que es evaluado.
 
 ## Estado y roadmap
-- ✅ Cuento interactivo ramificado · dilemas con mapeo pre-registrado · imágenes Nano Banana · voz ElevenLabs · branding dominikito.
-- ⏳ Siguiente: persistencia (Supabase) + registro de decisiones + dashboard de padres con PIN + agente de insights.
+- ✅ Landing pública · shell de auth · cuento interactivo ramificado · dilemas con mapeo
+  pre-registrado · imágenes Nano Banana · voz ElevenLabs · persistencia Supabase · dashboard con PIN
+  · branding dominikito.
+- ⏳ Siguiente: Google Auth real + agente de insights.

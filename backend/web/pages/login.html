@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Entrar a dominikito</title>
+  <link rel="icon" href="/assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="login-body">
+  <main class="login-shell">
+    <img class="login-logo" src="/assets/logo.png" alt="dominikito" onerror="this.remove()">
+    <section class="card login-card">
+      <h1>Entrar con Google</h1>
+      <p class="hint">
+        Esta pantalla queda lista para conectar Google Auth. Mientras tanto puedes continuar a la demo.
+      </p>
+      <div class="actions">
+        <a class="btn primary" id="google-auth-link" href="/app">Continuar demo</a>
+        <a class="btn ghost" href="/">Volver</a>
+      </div>
+    </section>
+  </main>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get("next") || "/app";
+    document.getElementById("google-auth-link").setAttribute("href", next);
+  </script>
+</body>
+</html>

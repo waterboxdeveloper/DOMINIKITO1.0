@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>dominikito</title>
+  <link rel="icon" href="/assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="landing-body">
+  <main class="landing-shell">
+    <header class="landing-nav">
+      <a class="landing-brand" href="/" aria-label="dominikito">
+        <img src="/assets/logo.png" alt="dominikito" onerror="this.style.display='none';document.getElementById('landing-wordmark').style.display='block';">
+        <span id="landing-wordmark" class="wordmark mini" style="display:none">dominikito</span>
+      </a>
+      <a class="nav-link" href="/app">Ver demo</a>
+    </header>
+
+    <section class="landing-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Cuentos interactivos infantiles</p>
+        <h1>dominikito</h1>
+        <p class="hero-text">
+          Crea aventuras personalizadas con voz, ilustraciones y decisiones que cambian la historia.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="/login?next=/app">Crear cuento</a>
+          <a class="btn ghost" href="/app">Probar demo</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <img src="/assets/mascot.png" alt="" onerror="this.remove()">
+        <div class="hero-orbit star-one">⭐</div>
+        <div class="hero-orbit star-two">🌙</div>
+        <div class="hero-orbit star-three">☁️</div>
+      </div>
+    </section>
+
+    <section class="landing-band" aria-label="Como funciona">
+      <article class="feature-tile">
+        <span>1</span>
+        <h2>Perfil del peque</h2>
+        <p>Edad, gustos, tema del cuento y recuerdos recientes para cuidar el contexto.</p>
+      </article>
+      <article class="feature-tile">
+        <span>2</span>
+        <h2>Cuento vivo</h2>
+        <p>La aventura avanza escena por escena con ilustraciones y lectura en voz alta.</p>
+      </article>
+      <article class="feature-tile">
+        <span>3</span>
+        <h2>Decisiones seguras</h2>
+        <p>Las elecciones se guardan como patrones agregados para papás, nunca como diagnóstico.</p>
+      </article>
+    </section>
+
+    <section class="landing-proof">
+      <p>
+        Diseñado con agentes separados: narrador, dilemas pre-registrados y dashboard protegido.
+      </p>
+      <a class="btn primary" href="/login?next=/app">Empezar</a>
+    </section>
+  </main>
+</body>
+</html>

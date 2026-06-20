@@ -21,6 +21,7 @@ sys.path.insert(0, str(BACKEND))
 load_dotenv(BACKEND / ".env")  # carga GOOGLE_API_KEY para la generación en vivo
 
 from fastapi import FastAPI, HTTPException, Response  # noqa: E402
+from fastapi.responses import FileResponse  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
@@ -29,7 +30,7 @@ from images import attach_images  # noqa: E402
 from interactive_runner import next_story, start_story  # noqa: E402
 from narrador_runner import generate_story  # noqa: E402
 from schemas import ChildProfile  # noqa: E402
-from tts import list_voices, synthesize  # noqa: E402
+from tts import get_tts_data, list_voices, synthesize  # noqa: E402
 
 import os  # noqa: E402
 
@@ -76,6 +77,9 @@ class TtsRequest(BaseModel):
     voice_id: str | None = None
 
 WEB_DIR = BACKEND / "web"
+PAGES_DIR = WEB_DIR / "pages"
+STATIC_DIR = WEB_DIR / "static"
+ASSETS_DIR = WEB_DIR / "assets"
 FIXTURES = BACKEND / "eval" / "fixtures"
 
 app = FastAPI(title="Dominikito API")
@@ -153,6 +157,15 @@ def tts_get(text: str, voice_id: str | None = None) -> Response:
     return _tts_response(text, voice_id)
 
 
+@app.get("/api/tts/timestamps")
+def tts_timestamps(text: str, voice_id: str | None = None) -> dict:
+    """Obtiene los timestamps de palabras de un texto para alineación de audio y texto."""
+    data = get_tts_data(text, voice_id)
+    if not data:
+        raise HTTPException(status_code=502, detail="No se pudieron generar los timestamps (revisa key/créditos).")
+    return {"words": data.get("words", [])}
+
+
 @app.get("/api/voices")
 def voices() -> dict:
     """Lista las voces de la cuenta de ElevenLabs (para elegir/configurar la voz)."""
@@ -180,8 +193,51 @@ def dashboard(child_id: str, pin: str | None = None) -> dict:
     return build_dashboard(child_id)
 
 
-# La interfaz estática se monta al final para que las rutas /api/* tengan prioridad.
-app.mount("/", StaticFiles(directory=str(WEB_DIR), html=True), name="web")
+@app.get("/")
+def landing_page() -> FileResponse:
+    """Landing pública. El CTA apunta a /login?next=/app."""
+    return FileResponse(PAGES_DIR / "landing.html")
+
+
+@app.get("/app")
+def app_page() -> FileResponse:
+    """Experiencia Dominikito actual: creador, lector y dashboard con PIN."""
+    return FileResponse(PAGES_DIR / "app.html")
+
+
+@app.get("/login")
+def login_page() -> FileResponse:
+    """Shell temporal para Google Auth. Mantiene el contrato /login?next=/app."""
+    return FileResponse(PAGES_DIR / "login.html")
+
+
+@app.get("/index.html")
+def legacy_index() -> FileResponse:
+    """Alias legacy para hosts que pidan index.html."""
+    return FileResponse(PAGES_DIR / "landing.html")
+
+
+@app.get("/app.html")
+def legacy_app_html() -> FileResponse:
+    """Alias legacy para la app movida."""
+    return FileResponse(PAGES_DIR / "app.html")
+
+
+@app.get("/styles.css")
+def legacy_styles() -> FileResponse:
+    """Alias legacy mientras migramos referencias a /static/styles.css."""
+    return FileResponse(STATIC_DIR / "styles.css")
+
+
+@app.get("/app.js")
+def legacy_app_js() -> FileResponse:
+    """Alias legacy mientras migramos referencias a /static/app.js."""
+    return FileResponse(STATIC_DIR / "app.js")
+
+
+# Se montan al final para que /api/* y páginas explícitas tengan prioridad.
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
 
 if __name__ == "__main__":
