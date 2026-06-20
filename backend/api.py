@@ -31,6 +31,18 @@ from narrador_runner import generate_story  # noqa: E402
 from schemas import ChildProfile  # noqa: E402
 from tts import list_voices, synthesize  # noqa: E402
 
+import os  # noqa: E402
+
+from aggregate import build_dashboard  # noqa: E402
+from db import create_story, list_children, save_decision, upsert_child  # noqa: E402
+
+DASHBOARD_PIN = os.environ.get("DASHBOARD_PIN", "1234")
+
+
+def _check_pin(pin: str | None) -> None:
+    if pin != DASHBOARD_PIN:
+        raise HTTPException(status_code=401, detail="PIN incorrecto.")
+
 
 def _dump(obj):
     """Serializa modelos Pydantic (o None) a JSON-friendly."""
@@ -95,11 +107,16 @@ def story_start(profile: ChildProfile) -> dict:
     r = _guard(start_story, profile)
     seg = r["segment"].model_dump(mode="json")
     seg["pages"] = attach_images(seg["pages"])  # Nano Banana: ilustración por página
+    # persistencia (no-op si no hay Supabase): identifica al niño y abre el cuento
+    child_id = upsert_child(profile.name, profile.age, profile.sex)
+    story_id = create_story(child_id, profile.story_theme)
     return {
         "segment": seg,
         "dilemma": _dump(r["dilemma"]),
         "choices_made": r["choices_made"],
         "total": r["total"],
+        "child_id": child_id,
+        "story_id": story_id,
     }
 
 
@@ -144,8 +161,23 @@ def voices() -> dict:
 
 @app.post("/api/decision")
 def decision(payload: dict) -> dict:
-    """Stub: registrar la decisión del niño (lookup del polo). La persistencia llega en el Paso 3."""
-    return {"ok": True, "received": payload}
+    """Guarda la decisión del niño (Contrato B): lookup del polo pre-registrado, SIN LLM."""
+    ok = save_decision(payload)
+    return {"ok": True, "persisted": ok}
+
+
+@app.get("/api/children")
+def children(pin: str | None = None) -> dict:
+    """Lista los niños (para el dashboard). Protegido con PIN."""
+    _check_pin(pin)
+    return {"children": list_children()}
+
+
+@app.get("/api/dashboard")
+def dashboard(child_id: str, pin: str | None = None) -> dict:
+    """Tendencias por dimensión de un niño (Contrato C). Protegido con PIN."""
+    _check_pin(pin)
+    return build_dashboard(child_id)
 
 
 # La interfaz estática se monta al final para que las rutas /api/* tengan prioridad.

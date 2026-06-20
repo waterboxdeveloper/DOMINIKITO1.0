@@ -94,8 +94,22 @@ body.dev .pole-tag{display:inline-block}
 
 /* ---- modo papás ---- */
 .devbar{position:fixed;top:12px;right:12px;z-index:10}
-.devbar button{font-family:'Nunito';font-weight:800;border:2px solid var(--ink);background:#fff;
-  border-radius:14px;padding:8px 12px;cursor:pointer}
+.parentbar{position:fixed;top:12px;left:12px;z-index:10}
+.devbar button,.parentbar button{font-family:'Nunito';font-weight:800;border:2px solid var(--ink);
+  background:#fff;border-radius:14px;padding:8px 12px;cursor:pointer}
+
+/* dashboard */
+.dash-dim{margin:14px 0}
+.dash-head{display:flex;justify-content:space-between;align-items:baseline}
+.dash-head b{font-family:'Baloo 2',cursive;color:var(--blue-deep);font-size:19px}
+.dash-n{font-size:13px;opacity:.6}
+.bar{display:flex;height:22px;border:2px solid var(--ink);border-radius:11px;overflow:hidden;margin:10px 0;background:#fff}
+.bar .seg{display:block;height:100%}
+.dash-sum{font-size:16px;margin-top:4px}
+.alert-chip{display:inline-block;margin-top:10px;border:2px solid var(--ink);border-radius:12px;
+  padding:4px 12px;font-size:13px;font-weight:800}
+#dash-child{width:100%;font-family:'Nunito';font-weight:700;font-size:16px;border:2px solid var(--ink);
+  border-radius:14px;padding:10px 12px;background:#fff}
 .devlog{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:#cfe;display:none;
   font-family:ui-monospace,monospace;font-size:13px;padding:10px 14px;max-height:32vh;overflow:auto}
 body.dev .devlog{display:block}

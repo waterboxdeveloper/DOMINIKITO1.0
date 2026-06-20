@@ -11,6 +11,7 @@
 </head>
 <body>
   <div class="devbar"><button onclick="toggleDev()">👁️ modo papás</button></div>
+  <div class="parentbar"><button onclick="showDashboardLogin()">📊 Dashboard</button></div>
 
   <div class="wrap">
     <header>
@@ -61,6 +62,30 @@
       <div id="reader"></div>
       <div class="actions">
         <button class="btn ghost" onclick="backToCreate()">← Crear otro cuento</button>
+      </div>
+    </section>
+
+    <!-- Pantalla 3: dashboard de padres (protegido con PIN) -->
+    <section id="screen-dashboard" class="screen">
+      <div class="card" id="dash-login">
+        <h2>📊 Dashboard de papás</h2>
+        <p class="hint">Patrones de las decisiones de tu peque a lo largo de los cuentos. No es un
+          diagnóstico — describe lo observado.</p>
+        <label>PIN</label>
+        <input id="dash-pin" type="password" placeholder="••••" />
+        <div class="actions">
+          <button class="btn primary" onclick="dashLogin()">Entrar</button>
+          <button class="btn ghost" onclick="backToCreate()">← Volver</button>
+        </div>
+        <div id="dash-err" class="err"></div>
+      </div>
+      <div id="dash-content" style="display:none">
+        <div class="card">
+          <label>Niño/a</label>
+          <select id="dash-child" onchange="loadChildDashboard(this.value)"></select>
+        </div>
+        <div id="dash-trends"></div>
+        <div class="actions"><button class="btn ghost" onclick="backToCreate()">← Volver</button></div>
       </div>
     </section>
   </div>
