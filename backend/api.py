@@ -29,7 +29,7 @@ from images import attach_images  # noqa: E402
 from interactive_runner import next_story, start_story  # noqa: E402
 from narrador_runner import generate_story  # noqa: E402
 from schemas import ChildProfile  # noqa: E402
-from tts import list_voices, synthesize  # noqa: E402
+from tts import get_tts_data, list_voices, synthesize  # noqa: E402
 
 import os  # noqa: E402
 
@@ -151,6 +151,15 @@ def tts_post(req: TtsRequest) -> Response:
 def tts_get(text: str, voice_id: str | None = None) -> Response:
     """Versión GET (para usar como `src` de <audio> y evitar bloqueos de autoplay del navegador)."""
     return _tts_response(text, voice_id)
+
+
+@app.get("/api/tts/timestamps")
+def tts_timestamps(text: str, voice_id: str | None = None) -> dict:
+    """Obtiene los timestamps de palabras de un texto para alineación de audio y texto."""
+    data = get_tts_data(text, voice_id)
+    if not data:
+        raise HTTPException(status_code=502, detail="No se pudieron generar los timestamps (revisa key/créditos).")
+    return {"words": data.get("words", [])}
 
 
 @app.get("/api/voices")

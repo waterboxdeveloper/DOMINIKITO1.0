@@ -117,3 +117,74 @@ body.dev .devlog{display:block}
 .err{color:var(--red);font-weight:800;text-align:center;margin-top:10px}
 .progress{display:inline-block;background:var(--purple);color:#fff;font-family:'Baloo 2',cursive;
   border:2px solid var(--ink);border-radius:14px;padding:4px 14px;margin:4px auto 0}
+
+/* Sincronización audio-texto (resaltado) */
+.word-span {
+  transition: background-color 0.12s ease, color 0.12s ease;
+  border-radius: 4px;
+  padding: 1px 3px;
+  margin: -1px -3px;
+  display: inline-block;
+}
+.word-span.highlight {
+  background-color: var(--yellow);
+  color: var(--ink);
+}
+
+/* Libro y paginación */
+.book-page {
+  display: none;
+}
+.book-page.active {
+  display: block;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+.book-page.fade-out {
+  display: block;
+  animation: fadeOut 0.4s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+.book-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  gap: 8px;
+}
+.book-nav .btn {
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 16px;
+  flex: 0 1 auto;
+  min-width: 90px;
+  text-align: center;
+}
+.book-nav .btn.read {
+  flex: 1 0 auto;
+  background: var(--purple);
+}
+.page-indicator {
+  font-family: 'Baloo 2', cursive;
+  font-size: 16px;
+  color: var(--blue-deep);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.btn:disabled, .opt:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+
