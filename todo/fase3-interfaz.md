@@ -27,5 +27,5 @@ post-procesado), NO el `/run` crudo de ADK. Request/response = mismos modelos Py
 - `POST /api/decision` → stub (persistencia = Paso siguiente).
 
 ## Fuera de alcance
-Supabase + registro real de decisiones, dashboard con PIN + Agente 3, imágenes Nano Banana,
+Persistencia + registro real de decisiones, dashboard + Agente 3, imágenes Nano Banana,
 migración a Next.js.

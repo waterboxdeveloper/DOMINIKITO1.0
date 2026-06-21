@@ -123,11 +123,11 @@ Conclusiones que aterrizan en este diseño:
 | Capa | Tecnología | Rol |
 |---|---|---|
 | Backend / agentes | **Python + Google ADK** (vía `agents-cli`) | Define el sistema multiagéntico y expone los **endpoints** (`adk api_server`, FastAPI) que consume el front. Playground en `:8080` para desarrollo. |
-| Frontend | **Next.js** (simple, sin complejidad) | Configuración de padres, "recuerdos", creación del cuento, lector interactivo del niño, dashboard de padres. |
-| Texto-a-voz | **ElevenLabs** | TTS opcional: el niño puede tocar para que el cuento se lea en voz alta. |
-| Imágenes | **"Nano Banana 2.0"** (Gemini) | Ilustraciones del cuento (heredado del MVP). |
-| Persistencia (Fase 2) | **Supabase** | Perfiles del niño, contexto de cada cuento, decisiones clasificadas (series temporales por niño/dimensión), datos del dashboard. |
-| Acceso al dashboard | **Clave / PIN** | El panel de padres está protegido; el niño nunca lo ve. |
+| Frontend | **Estático (HTML/CSS/JS)** servido por FastAPI | Configuración de padres, creación del cuento, lector interactivo, dashboard. (Migrable a Next.js.) |
+| Texto-a-voz | **ElevenLabs** | TTS: el niño puede tocar para que el cuento se lea en voz alta. |
+| Imágenes | **"Nano Banana 2.0"** (Gemini) | Ilustraciones del cuento. |
+| Auth + Persistencia | **Firebase (Auth + Firestore)** — client-side | Login con Google; cuentos (`stories`) y decisiones (`decisions`) por usuario. El dashboard agrega en el cliente. Ver [`FIRESTORE_SETUP.md`](./FIRESTORE_SETUP.md) y [`consideraciones.md`](./consideraciones.md). |
+| Acceso al dashboard | **Sesión de Google** (+ PIN local suave) | Cada usuario ve solo sus datos (Security Rules de Firestore); el niño nunca lo ve. |
 
 ## 10. Arquitectura de agentes
 

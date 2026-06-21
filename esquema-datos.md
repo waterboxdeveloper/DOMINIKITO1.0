@@ -95,7 +95,7 @@ elimina la interpretación post-hoc.
 ## 3. Contrato B — Decisión registrada (cuando el niño responde)
 
 Cuando el niño elige una opción, **NO se llama a ningún LLM**. Se hace un *lookup*: se copia el polo
-ya pre-registrado de la opción elegida. Esto es lo que se persiste (Supabase, Fase 3).
+ya pre-registrado de la opción elegida. Esto es lo que se persiste en **Firestore** (client-side).
 
 ```jsonc
 {
@@ -117,7 +117,11 @@ ya pre-registrado de la opción elegida. Esto es lo que se persiste (Supabase, F
 ```
 
 > `dimension`/`subaxis`/`pole` se copian (desnormalizan) del Contrato A a propósito: el Dashboard
-> consulta esta tabla directo, sin joins ni texto, para pintar gráficas.
+> consulta directo, sin joins ni texto, para pintar gráficas.
+>
+> **Implementación real (Firestore):** este contrato se persiste en la colección `decisions` con
+> nombres en camelCase y ligado al usuario (`userId`, `childName` en vez de `child_id`). La forma
+> exacta está en §6.
 
 ---
 
@@ -166,8 +170,8 @@ al front:
 
 ```
 Agente 1 (Narrador) ──cuento──▶ Agente 2 (Dilemas) ──Contrato A (dilema + polos pre-registrados)──▶
-   el niño elige una opción ──▶ Contrato B (lookup del polo, SIN LLM) ──▶ Supabase ──▶
-   Agregación + umbrales (psicologia.md) ──▶ Contrato C ──▶ Dashboard / Agente 3 (solo describe)
+   el niño elige una opción ──▶ Contrato B (lookup del polo, SIN LLM) ──▶ Firestore (client-side) ──▶
+   Agregación + umbrales (psicologia.md, en el cliente) ──▶ Contrato C ──▶ Dashboard / Agente 3 (solo describe)
 ```
 
 - El Agente 2 **genera** la pregunta y el mapeo → distinto del paso que **registra** la respuesta
@@ -178,15 +182,24 @@ Agente 1 (Narrador) ──cuento──▶ Agente 2 (Dilemas) ──Contrato A (d
 
 ---
 
-## 6. Esquema de persistencia (Supabase) derivado de los contratos
+## 6. Esquema de persistencia (Firestore) derivado de los contratos
 
+La persistencia es **client-side en Firebase/Firestore** (el niño/padre ya está autenticado con Google).
+Ver [`consideraciones.md`](./consideraciones.md) y [`FIRESTORE_SETUP.md`](./FIRESTORE_SETUP.md).
+
+Cada decisión es un documento en la colección **`decisions`** (Contrato B):
 ```
-dilemmas   (dilemma_id PK, story_id, child_id, page, primary_dimension, subaxis,
-            framework_refs jsonb, options jsonb, age_at_presentation, developmental_stage,
-            excluded_topics_respected jsonb, generator_agent, created_at)
-decisions  (decision_id PK, dilemma_id FK, child_id, story_id, chosen_option_id,
-            dimension, subaxis, pole, age_at_decision, developmental_stage,
-            response_latency_ms, timestamp)
+decisions/{autoId}: {
+  userId, childName,
+  dimension, subaxis, pole, chosenOptionId,
+  ageAtDecision, developmentalStage, dilemmaId, page, responseLatencyMs, createdAt
+}
 ```
-El Dashboard consulta `decisions` agrupando por `(child_id, dimension, pole)` con ventana temporal →
-produce el Contrato C en la capa de agregación (no en el LLM).
+Los **cuentos** viven en la colección `stories` (+ subcolección `pages`, imágenes/audio en Storage).
+
+El Dashboard lee las `decisions` del usuario, **filtra por `childName`** y **agrega en el cliente** por
+`(dimension, pole)` aplicando los umbrales → Contrato C. La agregación es un **port de
+`backend/aggregate.py`** (spec testeada en `tests/test_aggregate.py`); no usa LLM.
+
+> Las reglas de seguridad de Firestore garantizan que cada usuario solo lee/escribe sus propios
+> documentos (`userId == auth.uid`). El "PIN" del dashboard es solo un gate local suave.

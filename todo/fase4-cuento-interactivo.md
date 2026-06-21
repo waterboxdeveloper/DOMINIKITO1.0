@@ -20,4 +20,4 @@ next(final) → Escena final (según ambas elecciones). Agente 2 (Dilemas) intac
 - [ ] PENDIENTE correr: `pytest tests/test_interactive.py` y prueba en vivo (start→next→next final)
 
 ## Fuera de alcance
-Persistencia decisiones (Supabase), dashboard + Agente 3, imágenes Nano Banana.
+Persistencia decisiones (Firestore), dashboard + Agente 3, imágenes Nano Banana.

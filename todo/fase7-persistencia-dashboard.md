@@ -1,10 +1,10 @@
-# Fase 7 — Persistencia (Supabase) + Dashboard de padres
+# Fase 7 — Persistencia + Dashboard de padres
 
 > Contexto en `todo/`. Implementa Contratos B (decisión) y C (agregado) de `esquema-datos.md`.
-> Guía de setup en [`../SUPABASE_SETUP.md`](../SUPABASE_SETUP.md).
+> Guía de setup en [`../FIRESTORE_SETUP.md`](../FIRESTORE_SETUP.md).
 
 ## Objetivo
-Guardar niño/cuentos/decisiones en Supabase (lookup del polo, sin LLM) y un dashboard de padres
+Guardar niño/cuentos/decisiones (lookup del polo, sin LLM) y un dashboard de padres
 protegido con PIN que muestra tendencias por dimensión con los umbrales de psicologia.md.
 
 ## Estado
@@ -14,7 +14,7 @@ protegido con PIN que muestra tendencias por dimensión con los umbrales de psic
 - [x] `api.py`: /api/story/start devuelve child_id/story_id · /api/decision guarda · /api/children · /api/dashboard (PIN)
 - [x] `web`: guarda decisión en choose() · pantalla Dashboard con PIN + barras de tendencia
 - [x] `seed_demo.py` (demo sin gastar API) · `tests/test_aggregate.py`
-- [x] Supabase configurado (URL + sb_secret_ key en .env) + tablas creadas
+- [x] Persistencia en la nube configurada + tablas creadas
 - [x] Verificado en vivo: seed_demo (26 decisiones) → BD → build_dashboard agrega bien con umbrales
       (empatía/confianza=watch, autonomía=none, regulación=bajo umbral "sin datos suficientes")
 
