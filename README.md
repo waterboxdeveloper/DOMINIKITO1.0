@@ -1,5 +1,9 @@
 # dominikito 🐵🛸
 
+<p align="center">
+  <img src="logo.png" alt="Dominikito Logo" width="250" />
+</p>
+
 **Perfil Emocional Infantil a través de Decisiones Narrativas.** Cuentos interactivos donde las
 decisiones del niño dentro de la historia se convierten en señales emocionales y morales que los
 padres podrán ver como patrones a lo largo del tiempo. **Nunca diagnostica** — describe patrones y

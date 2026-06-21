@@ -464,9 +464,9 @@ function updateNavButtons() {
   } else if (currentPage.type === "dilemma") {
     if (readBtn) readBtn.style.display = "none";
     
-    if (isOfflineMode && !currentFirestoreStoryId) {
+    if ((isOfflineMode && !currentFirestoreStoryId) || currentPage.chosenOptionId) {
       nextBtn.style.display = "inline-block";
-      nextBtn.disabled = false;
+      nextBtn.disabled = currentPageIndex === pageCount - 1;
     } else {
       // En cuento interactivo el dilema se avanza eligiendo una opción, no con "Sig.".
       nextBtn.style.display = "none";
