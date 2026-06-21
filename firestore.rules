@@ -4,11 +4,19 @@ service cloud.firestore {
     match /stories/{storyId} {
       // Allow authenticated users to read, write and delete stories
       allow read, write, delete: if request.auth != null;
-      
+
       // Allow authenticated users to read and write pages
       match /pages/{pageIndex} {
         allow read, write: if request.auth != null;
       }
+    }
+
+    // Decisiones (perfil emocional): cada usuario solo accede a las suyas (ver consideraciones.md §5).
+    match /decisions/{decId} {
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
     }
   }
 }

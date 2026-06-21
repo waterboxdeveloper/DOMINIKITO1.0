@@ -24,7 +24,7 @@ pero la landing ya respeta el contrato de rutas.
 ## Guardrails preservados
 - `/api/*` no cambia.
 - El dashboard con PIN sigue dentro de `/app`.
-- La persistencia Supabase y el lookup de decisiones no se tocan.
+- La persistencia (Firestore) y el lookup de decisiones no se tocan.
 
 ## Verificación esperada
 - `GET /` → landing.

@@ -2,8 +2,10 @@
 
 > ⚠️ **Documento histórico.** Este fue el plan original. La **arquitectura realmente implementada**
 > (FastAPI sirviendo un front estático, cuento interactivo por tramos, Nano Banana, ElevenLabs) está
-> descrita en [`README.md`](./README.md), y la bitácora real por fases en [`todo/`](./todo/). Algunas
-> partes de abajo (frontend Next.js, fases Supabase) son aún pendientes/aspiracionales.
+> descrita en [`README.md`](./README.md), y la bitácora real por fases en [`todo/`](./todo/).
+> **IMPORTANTE:** las menciones a **Supabase** y a **Next.js** de abajo quedaron obsoletas — la
+> persistencia real es **Firebase/Firestore (client-side)** y el front es estático. Ver `README.md`,
+> `esquema-datos.md §6` y `consideraciones.md`.
 
 > Plan de ejecución de la feature descrita en [`idea.md`](./idea.md), con el fundamento de
 > [`psicologia.md`](./psicologia.md). Stack: **Python + Google ADK** (agentes) · **Next.js** (front)

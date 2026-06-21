@@ -21,15 +21,19 @@ deriva a profesionales.
 ## Arquitectura (lo que está implementado)
 
 ```
-Landing pública (/) ──CTA──▶ /login?next=/app ──▶ App Dominikito (/app)
+Landing pública (/) ──CTA──▶ /login (Google Auth) ──▶ App Dominikito (/app)
                                                      │
-                                                     fetch
-                                                     ▼
-FastAPI (backend/api.py)                         /api/story/start · /api/story/next   → agentes (ADK/Gemini)
-                                                 /api/tts · /api/voices               → ElevenLabs
-                                                 imágenes embebidas (data-URI)        → Nano Banana
-                                                 /api/decision · /api/dashboard       → Supabase
+                          ┌──────────────────────────┼───────────────────────────┐
+                          │ fetch (generación)        │ Firestore (persistencia, client-side)
+                          ▼                           ▼
+FastAPI (backend/api.py)                          stories + decisions → Firebase/Firestore
+  /api/story/start · /api/story/next → agentes (ADK/Gemini)
+  /api/tts · /api/voices             → ElevenLabs
+  imágenes embebidas (data-URI)      → Nano Banana
 ```
+El **dashboard** lee `decisions` de Firestore y agrega en el cliente con los umbrales de
+`psicologia.md` (spec testeada en `backend/aggregate.py`). Ver [`FIRESTORE_SETUP.md`](./FIRESTORE_SETUP.md)
+y [`consideraciones.md`](./consideraciones.md).
 
 - **Backend / agentes:** Python + **Google ADK** (Gemini). Agente `cuentista` (narrador interactivo
   por tramos), `dilemas` (genera el dilema + mapeo de polos), post-procesado determinista que valida
@@ -108,6 +112,6 @@ separación de motores (genera dilema ≠ clasifica ≠ agrega) · el niño nunc
 
 ## Estado y roadmap
 - ✅ Landing pública · shell de auth · cuento interactivo ramificado · dilemas con mapeo
-  pre-registrado · imágenes Nano Banana · voz ElevenLabs · persistencia Supabase · dashboard con PIN
-  · branding dominikito.
-- ⏳ Siguiente: Google Auth real + agente de insights.
+  pre-registrado · imágenes Nano Banana · voz ElevenLabs · login con Google · persistencia Firestore
+  (client-side) · dashboard de padres · branding dominikito.
+- ⏳ Siguiente: agente de insights · (deuda técnica: mover la agregación al servidor, ver consideraciones.md).

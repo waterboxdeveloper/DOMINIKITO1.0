@@ -38,4 +38,4 @@ Separar lo que produce el LLM de lo determinista:
 100% de dilemas con mapeo válido (taxonomía + polos distintos) y cero toques a temas excluidos.
 
 ## Fuera de alcance (Paso 3)
-Persistencia Supabase, registro de la decisión del niño (lookup), Agente 3, dashboard, frontend.
+Persistencia (Firestore), registro de la decisión del niño (lookup), Agente 3, dashboard, frontend.

@@ -2,10 +2,17 @@
 
 Fecha: 2026-06-20
 
+> **Actualización posterior (2026-06-20):** este handoff es un snapshot. Desde entonces: Google Auth
+> ya es **real** (Firebase Auth) y la persistencia se migró a **Firebase/Firestore client-side**
+> (Supabase eliminado; los endpoints `/api/decision`, `/api/children`, `/api/dashboard` ya no existen).
+> Ver [`consideraciones.md`](./consideraciones.md), [`FIRESTORE_SETUP.md`](./FIRESTORE_SETUP.md) y
+> `todo/fase8-firestore-migration.md`.
+
 ## Contexto rápido
 Dominikito es una app de cuentos interactivos infantiles. El backend es Python/FastAPI + Google ADK
-para agentes, Gemini/Nano Banana para imágenes, ElevenLabs para TTS, Supabase para persistencia y
-dashboard de padres con PIN. El frontend actual es HTML/CSS/JS estático servido por FastAPI.
+para agentes, Gemini/Nano Banana para imágenes, ElevenLabs para TTS, y **Firebase/Firestore
+(client-side)** para auth, persistencia y dashboard de padres. El frontend es HTML/CSS/JS estático
+servido por FastAPI.
 
 La tarea realizada fue reorganizar la web para que exista una landing pública antes de la app, sin
 romper el flujo actual de cuento, dashboard ni APIs.
@@ -43,7 +50,7 @@ Contrato para Google Auth:
 
 Docs actualizados:
 - `README.md`
-- `SUPABASE_SETUP.md`
+- `FIRESTORE_SETUP.md` (antes `SUPABASE_SETUP.md`, ya eliminado)
 - `backend/README.md`
 
 ## Verificación ya corrida
@@ -92,10 +99,10 @@ Nota: en el entorno de Codex hizo falta permiso escalado para bindear `127.0.0.1
 4. Revisar visualmente la landing en móvil y desktop.
 5. Si se despliega, confirmar que el host usa `uvicorn api:app --host 0.0.0.0 --port $PORT`.
 
-## Guardrails que no se tocaron
+## Guardrails que no se tocaron (en ESA fase; ver nota de actualización arriba)
 - Agentes ADK.
 - Taxonomía psicológica.
 - Contrato de dilemas pre-registrados.
-- `/api/story/start`, `/api/story/next`, `/api/decision`, `/api/dashboard`.
-- Persistencia Supabase.
+- `/api/story/start`, `/api/story/next` (siguen vivos). *(`/api/decision` y `/api/dashboard` se
+  removieron después: la persistencia es client-side en Firestore.)*
 - TTS e imágenes.

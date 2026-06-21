@@ -48,7 +48,7 @@ cuentos/backend/
 ```
 
 ## Fuera de alcance (siguiente fase)
-Agente 2 (Dilemas) + contrato pre-registrado, Agente 3, persistencia Supabase, frontend Next.js,
+Agente 2 (Dilemas) + contrato pre-registrado, Agente 3, persistencia (Firestore), frontend,
 imágenes (Nano Banana), TTS (ElevenLabs).
 
 ## Verificación
