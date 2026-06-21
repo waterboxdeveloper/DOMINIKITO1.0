@@ -1,5 +1,8 @@
 # Dominikito
 
+> [!NOTE]
+> Para ver instrucciones detalladas de desarrollo, arquitectura y despliegue del proyecto, por favor consulta [README_DEV.md](file:///Users/bbeltri/Documents/projects/Dominikito/DOMINIKITO1.0/README_DEV.md).
+
 **Project Logo:** ![Project Logo](project-logo.png)
 
 Track: 👁️ New Interfaces
