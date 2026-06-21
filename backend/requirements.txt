@@ -5,3 +5,4 @@ pydantic            # schemas (Story, ChildProfile)
 python-dotenv       # cargar backend/.env
 pytest              # tests deterministas y en vivo
 elevenlabs          # texto a voz (narración del cuento)
+cloudpickle         # para empaquetado local de Reasoning Engines (deploy_agents.py)
