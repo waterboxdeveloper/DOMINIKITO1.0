@@ -49,7 +49,13 @@ let currentFirestoreStoryId = null;
 
 function esc(s) { const d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
 async function errMsg(res) { try { const j = await res.json(); return j.detail || ("HTTP " + res.status); } catch (_) { return "HTTP " + res.status; } }
-function showScreen(id) { document.querySelectorAll(".screen").forEach(s => s.classList.remove("active")); document.getElementById(id).classList.add("active"); }
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  // El dashboard aprovecha todo el ancho; el resto de pantallas se mantienen en columna angosta.
+  const wrap = document.querySelector(".wrap");
+  if (wrap) wrap.classList.toggle("wrap-wide", id === "screen-dashboard");
+}
 function toggleDev() { document.body.classList.toggle("dev"); }
 function backToCreate() { stopAudio(); showScreen("screen-create"); document.getElementById("subtitle").textContent = "Cuentos que escuchan a tu peque"; }
 
@@ -758,6 +764,7 @@ const ALERT = { watch: ["⚠️ vale la pena observar", "#FFE9C2"], elevated: ["
 
 let activeDashboardTab = "trends"; // "trends" | "evolution" | "validity" | "privacy"
 let lastDashboardData = null;      // datos cacheados para redibujo instantáneo
+let currentDashChild = "";         // niño/a seleccionado en el dashboard (para el hero)
 
 // ===== Agregación client-side (port EXACTO de backend/aggregate.py; spec en tests/test_aggregate.py) =====
 // ⚠️ En producción esta lógica debería vivir en el servidor (ver consideraciones.md).
@@ -877,6 +884,7 @@ async function dashLogin() {
 }
 
 async function loadChildDashboard(childName) {
+  currentDashChild = childName || "";
   const box = document.getElementById("dash-trends");
   box.innerHTML = '<div class="loading"><div class="rocket">🛸</div></div>';
   try {
@@ -893,6 +901,82 @@ window.switchDashboardTab = function(tab) {
   if (lastDashboardData) {
     renderDashboard(lastDashboardData);
   }
+};
+
+// Mapa dimensión → cuento sugerido (honesto: practica una conducta, no "corrige" nada clínico).
+const STORY_SUGGESTION = {
+  regulacion_emocional: { theme: "un día lleno de sorpresas donde algo no sale como se esperaba", focus: "manejar la frustración con calma", icon: "🌊" },
+  confianza_apego:      { theme: "una aventura donde pedir ayuda a un amigo es la clave para avanzar", focus: "buscar apoyo y confiar en otros", icon: "🤝" },
+  honestidad:           { theme: "un pequeño misterio donde decir la verdad cambia el final feliz", focus: "decir la verdad y asumir errores", icon: "💎" },
+  empatia:              { theme: "un nuevo compañero que necesita ayuda en el recreo", focus: "ayudar y entender a los demás", icon: "💗" },
+  autonomia:            { theme: "una misión donde el protagonista elige su propio camino", focus: "decidir por sí mismo", icon: "🧭" },
+  riesgo_cautela:       { theme: "explorar con cuidado un lugar nuevo y desconocido", focus: "explorar lo nuevo con confianza", icon: "🚀" },
+};
+
+// Construye el hero del dashboard (Insight + Próximo cuento sugerido) SOLO con datos reales del agregado.
+function buildDashHero(data) {
+  const dims = data.dimensions || [];
+  const name = esc(currentDashChild || "tu peque");
+  const ready = dims.filter(d => d.meets_min_threshold && !d.secondary);
+  const alerted = ready.filter(d => d.alert_level !== "none")
+    .sort((a, b) => (b.alert_level === "elevated") - (a.alert_level === "elevated"));
+
+  // ---- Insight (lenguaje neutro, nunca diagnóstico) ----
+  let insightTitle, insightBody;
+  if (alerted.length) {
+    const d = alerted[0];
+    insightTitle = `Patrón a observar en ${esc(d.label)}`;
+    insightBody = esc(d.neutral_summary);
+  } else if (ready.length) {
+    const strongest = ready
+      .map(d => ({ d, share: d.dominant_pole ? d.distribution[d.dominant_pole] / (d.sample_size || 1) : 0 }))
+      .sort((a, b) => b.share - a.share)[0].d;
+    insightTitle = `Lo más marcado hasta ahora: ${esc(strongest.label)}`;
+    insightBody = esc(strongest.neutral_summary);
+  } else {
+    const most = dims.slice().sort((a, b) => b.sample_size - a.sample_size)[0];
+    const have = most ? most.sample_size : 0;
+    insightTitle = "Aún reuniendo las primeras decisiones";
+    insightBody = `Con cada cuento que juega ${name}, su perfil se va dibujando. Hacen falta al menos ${MIN_SAMPLE} decisiones por dimensión para hablar de un patrón (la que más tiene va en ${have}).`;
+  }
+
+  // ---- Próximo cuento sugerido: si hay alerta, trabaja esa dimensión; si no, la que menos datos tiene ----
+  let target = alerted.length ? alerted[0] : dims.slice().sort((a, b) => a.sample_size - b.sample_size)[0];
+  const sug = STORY_SUGGESTION[target ? target.dimension : "empatia"] || STORY_SUGGESTION.empatia;
+  const reason = alerted.length
+    ? `Para acompañar lo observado en ${esc(target.label)}.`
+    : `Para conocer mejor a ${name} en ${esc(target ? target.label : "una nueva área")}.`;
+
+  return `
+    <div class="dash-hero">
+      <div class="card hero-insight">
+        <div class="hero-tag">💡 Insight</div>
+        <h3>${insightTitle}</h3>
+        <p>${insightBody}</p>
+        <p class="hero-disclaimer">Es una observación de patrones de juego, no un diagnóstico.</p>
+      </div>
+      <div class="card hero-suggest">
+        <div class="hero-tag">📖 Próximo cuento sugerido</div>
+        <div class="suggest-row">
+          <span class="suggest-icon">${sug.icon}</span>
+          <div>
+            <h4>Un cuento sobre ${esc(sug.theme)}</h4>
+            <p class="suggest-focus">Practica: <b>${esc(sug.focus)}</b></p>
+          </div>
+        </div>
+        <p class="suggest-reason">${reason}</p>
+        <button class="btn primary suggest-cta" onclick="suggestStory('${esc(sug.theme).replace(/'/g, "\\'")}')">Generar este cuento →</button>
+      </div>
+    </div>
+  `;
+}
+
+// CTA del hero: pre-llena el tema y lleva a la pantalla de crear cuento.
+window.suggestStory = function(theme) {
+  const t = document.getElementById("f-theme");
+  if (t) t.value = theme;
+  backToCreate();
+  window.scrollTo(0, 0);
 };
 
 function renderDashboard(data) {
@@ -981,6 +1065,8 @@ function renderDashboard(data) {
       elevated: '<span class="alert-tag elevated-tag"><span class="dot pulse"></span>Patrón Persistente</span>'
     };
 
+    html += buildDashHero(data);
+
     html += `
       <div class="dash-overview">
         <div class="overview-item card shadow-sm">
@@ -1039,29 +1125,43 @@ function renderDashboard(data) {
         `;
       } else {
         const totalN = d.sample_size || 1;
-        
+        const domCount = d.dominant_pole ? d.distribution[d.dominant_pole] : 0;
+        const domShare = Math.round(100 * domCount / totalN);
+        const domLabel = POLE_LABELS[d.dominant_pole] || d.dominant_pole || "—";
+        const gaugeColor = d.alert_level === "elevated" ? "var(--pink)"
+                         : d.alert_level === "watch" ? "var(--orange)" : "var(--lila)";
+
+        // Termómetro circular: el anillo se llena con la fuerza de la tendencia dominante.
+        html += `
+          <div class="gauge-row">
+            <div class="gauge" style="--pct:${domShare};--gcol:${gaugeColor}">
+              <span class="gauge-pct">${domShare}%</span>
+            </div>
+            <div class="gauge-side">
+              <div class="gauge-dom">${esc(domLabel)}</div>
+              <div class="gauge-meta">${domCount} de ${totalN} decisiones</div>
+              ${d.alert_level !== "none"
+                ? (ALERT_BADGES[d.alert_level] || "")
+                : '<span class="alert-tag stable-tag"><span class="dot"></span>Estable</span>'}
+            </div>
+          </div>
+        `;
+
         html += '<div class="distribution-bar">';
         Object.keys(d.distribution).forEach((p, i) => {
           const c = d.distribution[p];
           if (!c) return;
           const w = (100 * c / totalN).toFixed(1);
-          html += `<span class="dist-seg" style="width:${w}%;background:${POLE_BAR_COLORS[i % POLE_BAR_COLORS.length]}" title="${esc(p)}: ${c}"></span>`;
+          html += `<span class="dist-seg" style="width:${w}%;background:${POLE_BAR_COLORS[i % POLE_BAR_COLORS.length]}" title="${esc(POLE_LABELS[p] || p)}: ${c}"></span>`;
         });
         html += '</div>';
 
-        html += '<div class="dist-legend">';
+        html += '<div class="dist-legend-compact">';
         Object.keys(d.distribution).forEach((p, i) => {
           const c = d.distribution[p];
-          const w = (100 * c / totalN).toFixed(0);
+          if (!c) return;
           const color = POLE_BAR_COLORS[i % POLE_BAR_COLORS.length];
-          const pLabel = POLE_LABELS[p] || p;
-          html += `
-            <div class="legend-item" style="opacity: ${c > 0 ? 1 : 0.4}">
-              <span class="legend-color-dot" style="background:${color}"></span>
-              <span class="legend-label">${esc(pLabel)}</span>
-              <span class="legend-val">${c} (${w}%)</span>
-            </div>
-          `;
+          html += `<span class="legc"><span class="legc-dot" style="background:${color}"></span>${esc(POLE_LABELS[p] || p)} ${c}</span>`;
         });
         html += '</div>';
 
@@ -1070,14 +1170,6 @@ function renderDashboard(data) {
             <p class="dash-sum">« ${esc(d.neutral_summary)} »</p>
           </div>
         `;
-
-        if (d.alert_level !== "none") {
-          html += `
-            <div class="alert-badge-container">
-              ${ALERT_BADGES[d.alert_level] || ""}
-            </div>
-          `;
-        }
       }
 
       html += `
