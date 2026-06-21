@@ -255,14 +255,41 @@ function profileFromForm() {
     temperament: document.getElementById("f-temp").value.trim(),
     recent_events: events ? [events] : [],
     story_theme: document.getElementById("f-theme").value.trim(),
+    include_toy: !!(document.getElementById("f-toy-include") && document.getElementById("f-toy-include").checked && toyImageB64),
+    toy_image_b64: toyImageB64,
+    favorite_toy: "",
   };
+}
+
+// Lee la foto del juguete como data-URI y la guarda en memoria (no se sube hasta crear el cuento).
+let toyImageB64 = "";
+window.onToySelected = function(input) {
+  const status = document.getElementById("f-toy-status");
+  const file = input.files && input.files[0];
+  if (!file) { toyImageB64 = ""; if (status) status.textContent = ""; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    toyImageB64 = e.target.result || "";
+    const cb = document.getElementById("f-toy-include");
+    if (cb) cb.checked = true;  // al subir foto asumimos que sí lo quiere (puede desmarcar)
+    if (status) status.textContent = "🧸 Foto lista: su juguete aparecerá en una escena del cuento.";
+  };
+  reader.readAsDataURL(file);
+};
+
+// Loader animado del monito (rebota, se bambolea y suelta destellos). Reutilizable.
+function monkeyLoaderHTML(msg) {
+  return '<div class="loading">'
+    + '<div class="monkey-loader">'
+    +   '<img class="monkey-img" src="/assets/loading-monkey.png" alt="Cargando">'
+    + '</div>'
+    + (msg ? '<p class="loading-sub">' + esc(msg) + '</p>' : '')
+    + '</div>';
 }
 
 function showLoading(msg) {
   showScreen("screen-reader");
-  document.getElementById("reader").innerHTML =
-    '<div class="loading"><div class="rocket">🚀</div><p>' + esc(msg || "Creando la aventura…") +
-    '</p><p style="opacity:.6;font-size:14px">(unos segundos)</p></div>';
+  document.getElementById("reader").innerHTML = monkeyLoaderHTML(msg || "Creando la aventura…");
 }
 
 function wrapTextInSpans(text, startWordIdx, pageIdx) {
@@ -605,6 +632,7 @@ async function createStory() {
     total = data.total || 2;
     childId = data.child_id || null;
     storyId = data.story_id || null;
+    if (data.favorite_toy && profile) profile.favorite_toy = data.favorite_toy;  // cachea la descripción de visión
     
     // Create new story metadata document in Firestore
     const storyRef = doc(collection(db, "stories"));
@@ -889,7 +917,7 @@ async function dashLogin() {
 async function loadChildDashboard(childName) {
   currentDashChild = childName || "";
   const box = document.getElementById("dash-trends");
-  box.innerHTML = '<div class="loading"><div class="rocket">🛸</div></div>';
+  box.innerHTML = monkeyLoaderHTML("Cargando el perfil…");
   try {
     const rows = await loadDecisions(childName);          // lee de Firestore
     lastDashboardData = aggregateDecisions(rows);          // agrega con umbrales psicologia.md
@@ -1439,7 +1467,7 @@ async function showHistoryScreen() {
   showScreen("screen-history");
   document.getElementById("subtitle").textContent = "Mis cuentos";
   const listDiv = document.getElementById("history-list");
-  listDiv.innerHTML = '<div class="loading"><div class="rocket">🛸</div><p>Cargando tus cuentos…</p></div>';
+  listDiv.innerHTML = monkeyLoaderHTML("Cargando tus cuentos…");
   
   if (!currentUser) {
     listDiv.innerHTML = '<div class="err">Debes iniciar sesión con Google para ver tus cuentos.</div>';

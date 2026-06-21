@@ -7,7 +7,7 @@
   <link rel="icon" href="/assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/styles.css?v=6">
+  <link rel="stylesheet" href="/static/styles.css?v=13">
 </head>
 <body>
   <div class="parentbar"><button onclick="showDashboardLogin()">📊 Dashboard</button></div>
@@ -66,6 +66,10 @@
         <label>Recuerdos / cosas que pasaron (opcional)</label>
         <textarea id="f-events" placeholder="ej. hoy se peleó en la escuela por un juguete"></textarea>
         <p class="hint">Los recuerdos ayudan a personalizar y a evitar temas delicados.</p>
+        <label>Foto de su juguete favorito (opcional)</label>
+        <input id="f-toy" type="file" accept="image/*" onchange="onToySelected(this)" />
+        <label class="check-row"><input id="f-toy-include" type="checkbox" /> ✨ Quiero que su juguete aparezca en el cuento</label>
+        <p class="hint" id="f-toy-status"></p>
         <div class="actions">
           <button class="btn primary" onclick="createStory()">Crear cuento ✨</button>
           <button class="btn ghost" onclick="loadSample()">Ver ejemplo</button>
@@ -128,6 +132,6 @@
     <div id="devlog-body"></div>
   </div>
 
-  <script type="module" src="/static/app.js?v=6"></script>
+  <script type="module" src="/static/app.js?v=13"></script>
 </body>
 </html>
