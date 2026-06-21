@@ -50,6 +50,20 @@ class ChildProfile(BaseModel):
         default_factory=list,
         description="IDs de los personajes secundarios que participan (dominik, maria, mateo, dino, robot).",
     )
+    include_toy: bool = Field(
+        default=False,
+        description="Si los padres marcaron que quieren que el juguete favorito aparezca en el cuento.",
+    )
+    favorite_toy: str = Field(
+        default="",
+        description="Descripción corta del juguete favorito (la deriva la visión a partir de la foto). "
+        "Es lo único del juguete que ve el narrador.",
+    )
+    toy_image_b64: str = Field(
+        default="",
+        description="Foto del juguete como data-URI base64. Solo transporte para visión + referencia de "
+        "imagen; NO se inyecta al state del LLM.",
+    )
 
 
 class StoryPage(BaseModel):
@@ -68,6 +82,11 @@ class StoryPage(BaseModel):
         default=False,
         description="True si la página deja una situación ABIERTA donde el Agente 2 podrá "
         "insertar un dilema de decisión. No incluyas la pregunta aquí: solo deja el gancho.",
+    )
+    show_toy: bool = Field(
+        default=False,
+        description="True SOLO si el juguete favorito del niño aparece en esta escena (para ilustrarlo "
+        "con la foto de referencia). Si no hay juguete favorito, siempre False.",
     )
 
 

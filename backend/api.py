@@ -26,7 +26,7 @@ from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
 from dilemas_runner import generate_dilemmas  # noqa: E402
-from images import attach_images  # noqa: E402
+from images import attach_images, describe_toy  # noqa: E402
 from interactive_runner import next_story, start_story  # noqa: E402
 from narrador_runner import generate_story  # noqa: E402
 from schemas import ChildProfile  # noqa: E402
@@ -96,31 +96,43 @@ def storybook_sample() -> dict:
     return {"story": story, "dilemmas": dilemmas, "errors": []}
 
 
+def _ensure_toy_description(profile: ChildProfile) -> None:
+    """Si el padre subió foto del juguete y aún no hay descripción, la deriva con visión (una vez)."""
+    if profile.include_toy and profile.toy_image_b64 and not profile.favorite_toy:
+        profile.favorite_toy = describe_toy(profile.toy_image_b64)
+
+
 @app.post("/api/story/start")
 def story_start(profile: ChildProfile) -> dict:
     """Abre el cuento interactivo: primer tramo (escena 1) + su dilema."""
+    _ensure_toy_description(profile)
+    toy = profile.toy_image_b64 if profile.include_toy else ""
     r = _guard(start_story, profile)
     seg = r["segment"].model_dump(mode="json")
-    seg["pages"] = attach_images(seg["pages"])  # Nano Banana: ilustración por página
+    seg["pages"] = attach_images(seg["pages"], toy)  # Nano Banana: ilustración (+ juguete de referencia)
     return {
         "segment": seg,
         "dilemma": _dump(r["dilemma"]),
         "choices_made": r["choices_made"],
         "total": r["total"],
+        "favorite_toy": profile.favorite_toy,  # el front lo cachea para no re-llamar a visión
     }
 
 
 @app.post("/api/story/next")
 def story_next(req: NextRequest) -> dict:
     """Continúa el cuento según la elección del niño (o lo concluye si ya hubo 2 decisiones)."""
+    _ensure_toy_description(req.profile)
+    toy = req.profile.toy_image_b64 if req.profile.include_toy else ""
     r = _guard(next_story, req.profile, req.story_so_far, req.choice, req.choices_made)
     seg = r["segment"].model_dump(mode="json")
-    seg["pages"] = attach_images(seg["pages"])  # Nano Banana: ilustración por página
+    seg["pages"] = attach_images(seg["pages"], toy)  # Nano Banana: ilustración (+ juguete de referencia)
     return {
         "segment": seg,
         "dilemma": _dump(r["dilemma"]),
         "done": r["done"],
         "choices_made": r["choices_made"],
+        "favorite_toy": req.profile.favorite_toy,
     }
 
 

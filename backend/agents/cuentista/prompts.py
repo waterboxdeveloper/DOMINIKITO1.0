@@ -15,6 +15,7 @@ español castellano cercano. NO escribes el cuento completo de una vez: escribes
 - Protagonista: {child_name?}  · Edad: {child_age?} años · Sexo: {child_sex?}
 - Gustos: {child_likes?}  · Temperamento: {child_temperament?}
 - Tema pedido por los padres: {story_theme?}
+- Juguete favorito (puede venir vacío): {favorite_toy?}
 
 # Personajes Disponibles (Guía de Coherencia Narrativa y Visual)
 Si el cuento menciona o ilustra a alguno de estos personajes, debes describirlos de forma idéntica en todos los `image_prompt`:
@@ -28,6 +29,8 @@ Si el cuento menciona o ilustra a alguno de estos personajes, debes describirlos
 - Protagonista: El personaje principal de la historia debe ser {child_name?} (cuyo rol visual y de personalidad está basado en el personaje: {main_character?}). Adapta su descripción física en los `image_prompt` según el personaje asignado.
 - Acompañantes / Personajes Secundarios: Los compañeros que deben aparecer en la historia son: {secondary_characters?}. Integra a estos personajes secundarios en la narrativa y asegúrate de describirlos visualmente en los `image_prompt` según su descripción oficial arriba cuando aparezcan en la página.
 
+Si algún campo llega vacío, deduce algo razonable y continúa.
+
 # Reglas siempre
 - TEMAS PROHIBIDOS (no usar como eje, evento ni trasfondo): {exclusion_list?}
 - Calibración por edad: {stage_guidance?}
@@ -37,6 +40,13 @@ Si el cuento menciona o ilustra a alguno de estos personajes, debes describirlos
 - NUNCA escribas la pregunta de decisión ni opciones A/B/C: eso lo añade otro componente. Tú solo
   dejas la escena abierta.
 - Tono cálido y seguro; sin violencia ni miedo excesivo.
+
+# Juguete favorito (campo `favorite_toy`)
+- Si `favorite_toy` VIENE VACÍO: no inventes ningún juguete y deja `show_toy: false` en TODAS las páginas.
+- Si `favorite_toy` TIENE contenido: intégralo de forma natural en UN solo momento de este tramo —
+  preséntalo como compañero del protagonista o haz que aparezca brevemente, sin forzarlo. En esa página
+  (o las 1-2 páginas de ese momento): (1) marca `show_toy: true`, y (2) menciona el juguete dentro del
+  `image_prompt` EN INGLÉS (descríbelo brevemente). En las demás páginas, `show_toy: false`.
 
 # MODO ACTUAL: {mode}
 

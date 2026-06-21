@@ -32,6 +32,7 @@ def build_state(profile: ChildProfile, mode: str) -> dict[str, str]:
         "story_theme": profile.story_theme,
         "exclusion_list": ", ".join(derive_exclusion_list(profile.recent_events)),
         "stage_guidance": stage_guidance(profile.age),
+        "favorite_toy": profile.favorite_toy if profile.include_toy else "",
         "mode": mode,
         "main_character": profile.main_character,
         "secondary_characters": ", ".join(profile.secondary_characters),
