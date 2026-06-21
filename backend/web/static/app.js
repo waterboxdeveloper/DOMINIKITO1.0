@@ -1786,6 +1786,7 @@ async function deleteSavedStory(storyIdVal) {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
+    document.body.style.display = "block";
     document.getElementById("user-header").style.display = "flex";
     document.getElementById("user-header-anonymous").style.display = "none";
     document.getElementById("user-avatar-img").src = user.photoURL || "";
@@ -1796,9 +1797,7 @@ onAuthStateChanged(auth, (user) => {
     });
   } else {
     currentUser = null;
-    document.getElementById("user-header").style.display = "none";
-    document.getElementById("user-header-anonymous").style.display = "flex";
-    document.getElementById("btn-show-history").style.display = "none";
+    window.location.href = "/";
   }
 });
 

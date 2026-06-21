@@ -9,8 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css?v=13">
 </head>
-<body>
-  <div class="parentbar"><button onclick="showDashboardLogin()">📊 Dashboard</button></div>
+<body style="display: none;">
+  <div class="parentbar">
+    <button style="display: none;" id="btn-show-history" onclick="showHistoryScreen()">📚 Mis cuentos</button>
+    <button onclick="showDashboardLogin()">📊 Dashboard</button>
+  </div>
 
   <div class="wrap">
     <div class="user-header-wrap" id="user-header" style="display: none;">
@@ -84,7 +87,6 @@
         <div class="actions">
           <button class="btn primary" onclick="createStory()">Crear cuento ✨</button>
           <button class="btn ghost" onclick="loadSample()">Ver ejemplo</button>
-          <button class="btn" style="background:var(--purple); display: none;" id="btn-show-history" onclick="showHistoryScreen()">Mis cuentos 📚</button>
         </div>
         <div id="create-err" class="err"></div>
       </div>

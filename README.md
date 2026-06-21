@@ -47,41 +47,72 @@ y [`consideraciones.md`](./consideraciones.md).
 ## Estructura
 
 ```
-cuentos/
-├── README.md            · este archivo
-├── idea.md              · concepto del feature y guardrails
-├── psicologia.md        · fundamento citable (CASEL/Ma/Erikson, umbrales)
-├── esquema-datos.md     · contrato lógico-psicológico (dilema pre-registrado)
-├── branding.md          · guía de marca dominikito
-├── pruebas-agente1.md   · plan de pruebas del narrador
-├── plan-desarrollo.md   · plan original (histórico; la arquitectura real es la de este README)
-├── todo/                · bitácora por fases (fase1…fase6)
-├── demo/                · demo de estilo estático (regenerable)
+DOMINIKITO1.0/
+├── README.md               · este archivo
+├── LICENSE                 · Licencia de código abierto MIT
+├── idea.md                 · concepto del feature y guardrails
+├── psicologia.md           · fundamento citable (CASEL/Ma/Erikson, umbrales)
+├── esquema-datos.md        · contrato lógico-psicológico (dilema pre-registrado)
+├── branding.md             · guía de marca dominikito
+├── consideraciones.md      · consideraciones técnicas e integración client-side
+├── FIRESTORE_SETUP.md      · guía paso a paso para configurar Firebase Firestore
+├── DEPLOYMENT.md           · notas sobre despliegue en GCP (Terraform + Cloud Run)
+├── handoff-landing-auth.md · notas sobre la landing page y el flujo de autenticación
+├── plan-desarrollo.md      · plan original (histórico; la arquitectura real es la de este README)
+├── todo/                   · bitácora por fases (fase1…fase8)
+├── demo/                   · demo de estilo estático (render_demo.py)
+├── images/                 · imágenes locales de referencia de personajes y criaturas
+├── firebase.json           · configuración de Firebase CLI
+├── firestore.rules         · reglas de seguridad de Firestore
+├── storage.rules           · reglas de seguridad de Firebase Storage
+├── terraform/              · scripts de Terraform para aprovisionamiento GCP
 └── backend/
-    ├── api.py           · FastAPI: endpoints + sirve web/
-    ├── agents/          · cuentista, dilemas, narrador (ADK)
-    ├── *.py             · taxonomy, schemas, runners, post-procesado, images, tts, ...
-    ├── web/             · landing, app, static/ y assets/
-    ├── eval/            · evalsets ADK + fixtures
-    ├── tests/           · pytest (deterministas + en vivo)
-    ├── requirements.txt · dependencias
-    └── .env.example     · variables de entorno (copiar a .env)
+    ├── api.py              · FastAPI: endpoints principales y servicio de web/
+    ├── agents/             · agentes ADK (cuentista, dilemas, narrador)
+    ├── *.py                · taxonomy, schemas, runners, tts, images, profile, aggregate...
+    ├── web/                · frontend estático (landing, app, login) + assets/ y static/
+    ├── eval/               · evalsets de ADK + fixtures de pruebas
+    ├── tests/              · tests unitarios con pytest (deterministas y en vivo)
+    ├── requirements.txt    · dependencias del backend
+    └── .env.example        · variables de entorno de ejemplo (copiar a .env)
 ```
+
+## Dependencias Principales
+
+El proyecto requiere **Python 3.10 o superior** y utiliza las siguientes librerías core:
+*   `google-adk`: Agent Development Kit de Google para construir, testear y evaluar agentes de IA.
+*   `google-genai`: SDK oficial de Gemini para la generación de texto, dilemas e imágenes.
+*   `elevenlabs`: API de ElevenLabs para la síntesis de voz (TTS) con marcas de tiempo por palabra.
+*   `pydantic`: Validación de esquemas y modelos de datos.
+*   `fastapi` / `uvicorn`: API del servidor y servicio del frontend estático.
+*   `python-dotenv`: Carga de variables de entorno locales desde `.env`.
+*   `cloudpickle`: Empaquetado local de los Reasoning Engines (agentes) para despliegue.
 
 ## Correr localmente
 
-```bash
-cd backend
-python3.13 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-cp .env.example .env        # y rellena tus claves (ver tabla abajo)
-.venv/bin/python api.py     # → http://127.0.0.1:8080
-```
+1. Configura el entorno virtual de Python e instala las dependencias:
+   ```bash
+   cd backend
+   python3 -m venv .venv
+   source .venv/bin/activate  # En Windows usa: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+2. Configura las variables de entorno:
+   ```bash
+   cp .env.example .env
+   # Edita .env con tus llaves y configuraciones de servicios.
+   ```
+
+3. Levanta el servidor FastAPI local:
+   ```bash
+   python api.py  # Levanta el servidor en http://127.0.0.1:8080
+   ```
 
 Rutas principales:
-- `http://127.0.0.1:8080/` → landing pública.
-- `http://127.0.0.1:8080/login?next=/app` → placeholder temporal de Google Auth.
-- `http://127.0.0.1:8080/app` → experiencia actual: crear cuento, lector, dashboard con PIN.
+- `http://127.0.0.1:8080/` → Landing pública.
+- `http://127.0.0.1:8080/login?next=/app` → Autenticación mediante Google Sign-In.
+- `http://127.0.0.1:8080/app` → Aplicación Dominikito (crear cuento, lector de libro interactivo, dashboard).
 
 ### Variables de entorno
 | Variable | Requerida | Para qué |
@@ -94,24 +125,32 @@ Rutas principales:
 | `HOST` / `PORT` | no | bind del servidor (deploy: `0.0.0.0` / `$PORT`) |
 
 ## Tests
+
+Para ejecutar las pruebas del backend:
 ```bash
 cd backend
-.venv/bin/python -m pytest tests/ -q          # deterministas (sin claves)
-# en vivo (con claves): los tests *_live dejan de saltarse
+.venv/bin/pytest tests/ -q          # Pruebas unitarias deterministas (sin llamadas externas)
+# Nota: Si configuras las claves correctas en .env, las pruebas unitarias que hacen llamadas en vivo (*_live) dejarán de saltarse.
 ```
 
 ## Deploy
 - **Root del servicio:** `backend/`
 - **Build:** `pip install -r requirements.txt`
 - **Start:** `uvicorn api:app --host 0.0.0.0 --port $PORT`
-- **Variables:** define las claves en el panel del host (NO subas `.env`).
+- **Variables:** define las claves en el panel del host (NO subas `.env`). Para aprovisionamiento de infraestructura completa en GCP, consulta [`DEPLOYMENT.md`](./DEPLOYMENT.md) y usa la carpeta `terraform/`.
 
 ## Guardrails (no negociables)
 Nunca diagnostica · nunca da consejo psicológico · dimensiones ancladas a literatura citable ·
 separación de motores (genera dilema ≠ clasifica ≠ agrega) · el niño nunca siente que es evaluado.
+
 
 ## Estado y roadmap
 - ✅ Landing pública · shell de auth · cuento interactivo ramificado · dilemas con mapeo
   pre-registrado · imágenes Nano Banana · voz ElevenLabs · login con Google · persistencia Firestore
   (client-side) · dashboard de padres · branding dominikito.
 - ⏳ Siguiente: agente de insights · (deuda técnica: mover la agregación al servidor, ver consideraciones.md).
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](file:///Users/bbeltri/Documents/projects/Dominikito/DOMINIKITO1.0/LICENSE) para obtener más detalles.
+

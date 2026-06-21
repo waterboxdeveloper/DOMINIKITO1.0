@@ -132,7 +132,7 @@ body.dev .pole-tag{display:inline-block}
 @keyframes subPulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
 
 /* ---- modo papás ---- */
-.parentbar{position:fixed;top:12px;right:12px;z-index:10}
+.parentbar{position:fixed;top:12px;right:12px;z-index:10;display:flex;gap:8px}
 .parentbar button{font-family:'Nunito';font-weight:800;border:2px solid var(--ink);
   background:#fff;border-radius:14px;padding:8px 12px;cursor:pointer}
 
