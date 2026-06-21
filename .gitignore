@@ -34,3 +34,12 @@ Thumbs.db
 # --- Artefactos generados ---
 demo/*.html
 *.log
+
+# --- Terraform ---
+.terraform/
+**/.terraform/
+**/terraform.tfvars
+*.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfstate.d

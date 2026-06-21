@@ -52,11 +52,11 @@ async def _agenerate_segment(
         app_name=APP_NAME, user_id="tester", state=build_state(profile, mode)
     )
     if mode == "start":
-        msg = "Empieza el cuento (modo start)."
+        msg = "Empieza el cuento (modo start). REGLA CRÍTICA: Divide la historia en MUCHAS páginas (exactamente entre 5 y 6 páginas). Cada página debe tener un MÁXIMO de 1 o 2 oraciones muy cortas."
     else:
         history = "\n".join(story_so_far or [])
         msg = (f"Historia hasta ahora:\n{history}\n\n"
-               f"El niño eligió: «{last_choice}»\n\nContinúa el cuento (modo {mode}).")
+               f"El niño eligió: «{last_choice}»\n\nContinúa el cuento (modo {mode}). REGLA CRÍTICA: Divide la historia en varias páginas (exactamente entre 4 y 5 páginas). Cada página debe tener un MÁXIMO de 1 o 2 oraciones muy cortas.")
     final_text: str | None = None
     async for event in runner.run_async(
         user_id="tester",

@@ -53,7 +53,12 @@ def generate_image(prompt: str) -> bytes | None:
             resp = _client_once().models.generate_content(
                 model=IMAGE_MODEL,
                 contents=full,
-                config=types.GenerateContentConfig(response_modalities=modalities),
+                config=types.GenerateContentConfig(
+                    response_modalities=modalities,
+                    image_config=types.ImageConfig(
+                        aspect_ratio="16:9"
+                    ),
+                ),
             )
             for cand in resp.candidates or []:
                 parts = cand.content.parts if cand.content else []

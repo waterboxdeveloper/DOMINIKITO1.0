@@ -48,7 +48,10 @@ class StoryPage(BaseModel):
     """Una página del cuento."""
 
     page: int = Field(description="Número de página, empezando en 1.", ge=1)
-    text: str = Field(description="Texto narrativo de la página, cálido y acorde a la edad.")
+    text: str = Field(
+        description="Texto narrativo MUY corto de la página (máximo 1 o 2 oraciones sencillas, "
+        "entre 15 y 25 palabras en total). Debe ser cálido, dinámico y acorde a la edad.",
+    )
     image_prompt: str = Field(
         description="Prompt EN INGLÉS, puramente visual, para ilustrar la página "
         "(estilo libro infantil acuarela). Describe escena, personajes y expresiones.",
@@ -64,7 +67,9 @@ class Story(BaseModel):
     """Cuento completo generado por el Narrador (Agente 1)."""
 
     title: str = Field(description="Título del cuento, evocador y apto para niños.")
-    pages: list[StoryPage] = Field(description="Páginas en orden. Debe haber ≥1 checkpoint.")
+    pages: list[StoryPage] = Field(
+        description="Páginas en orden. Debe haber ≥1 checkpoint. Cada página con texto muy corto.",
+    )
     age_at_creation: float = Field(
         description="Edad exacta del niño al crear el cuento (copiada del perfil, para auditoría).",
     )
@@ -76,7 +81,10 @@ class StorySegment(BaseModel):
     """Un tramo del cuento interactivo. Si no es el final, la última página deja una escena
     abierta (`is_checkpoint`) lista para el dilema."""
 
-    pages: list[StoryPage] = Field(description="Páginas de este tramo, en orden.")
+    pages: list[StoryPage] = Field(
+        description="Páginas de este tramo, en orden. OBLIGATORIO: Genera exactamente de 5 a 6 páginas por tramo "
+        "en modo 'start' y de 4 a 5 páginas en modo 'continue' o 'conclude'.",
+    )
     is_ending: bool = Field(
         default=False, description="True si este tramo cierra el cuento (sin más decisiones).",
     )

@@ -310,11 +310,12 @@ function renderBook() {
         
         let clickHandler = "";
         let disabledAttr = "";
-        if (isOfflineMode) {
+        
+        if (isOfflineMode && currentFirestoreStoryId) {
           disabledAttr = "disabled";
         } else {
-          // No-offline = cuento interactivo real → la opción avanza la historia y guarda la decisión.
-          clickHandler = `choose(this)`;
+          const isSample = !currentFirestoreStoryId;
+          clickHandler = isSample ? `selectSampleOption(this)` : `choose(this)`;
         }
         
         dilemmaHtml += `
@@ -350,7 +351,7 @@ function renderBook() {
     <div class="book-nav">
       <button class="btn nav-btn" id="prev-btn" onclick="prevPage()">⬅️ Ant.</button>
       <button class="btn read" id="read-btn" onclick="togglePlayPause()">🔊 Léemelo</button>
-      <div class="page-indicator" id="page-indicator">Página 1 de 1</div>
+      <div class="page-indicator" id="page-indicator">Página ${currentPageIndex + 1} de ${bookPages.length}</div>
       <button class="btn nav-btn" id="next-btn" onclick="nextPage()">Sig. ➡️</button>
     </div>
   `;
@@ -387,7 +388,7 @@ function updateNavButtons() {
   } else if (currentPage.type === "dilemma") {
     if (readBtn) readBtn.style.display = "none";
     
-    if (isOfflineMode) {
+    if (isOfflineMode && !currentFirestoreStoryId) {
       nextBtn.style.display = "inline-block";
       nextBtn.disabled = false;
     } else {
@@ -471,7 +472,7 @@ function prevPage() {
 
 function renderProgressHtml() {
   const ending = bookPages.length > 0 && bookPages[bookPages.length - 1].type === "ending";
-  if (!ending && !isOfflineMode) {
+  if (!ending && currentFirestoreStoryId && !isOfflineMode) {
     return '<div class="progress">Decisión ' + (choicesMade + 1) + " de " + total + "</div>";
   }
   return "";
@@ -572,6 +573,7 @@ async function renderStep(data) {
 
   const progressHtml = renderProgressHtml();
   document.getElementById("reader").innerHTML = progressHtml + renderBook();
+  updateNavButtons();
   
   showScreen("screen-reader");
   window.scrollTo(0, 0);
@@ -747,6 +749,7 @@ async function loadSample() {
     
     const progressHtml = renderProgressHtml();
     document.getElementById("reader").innerHTML = progressHtml + renderBook();
+    updateNavButtons();
     showScreen("screen-reader"); 
     window.scrollTo(0, 0);
     
@@ -1495,11 +1498,27 @@ async function showHistoryScreen() {
 
 async function readSavedStory(storyIdVal) {
   showLoading("Cargando tu cuento guardado…");
-  isOfflineMode = true;
   currentFirestoreStoryId = storyIdVal;
   allStoryPages = [];
   
   try {
+    const storySnap = await getDoc(doc(db, "stories", storyIdVal));
+    if (storySnap.exists()) {
+      const storyData = storySnap.data();
+      document.getElementById("subtitle").textContent = storyData.theme + " (guardado)";
+      if (storyData.status === "in_progress") {
+        isOfflineMode = false;
+        childId = storyData.childId;
+        storyId = storyData.backendStoryId;
+        choicesMade = storyData.choicesMade || 0;
+        total = storyData.total || 3;
+      } else {
+        isOfflineMode = true;
+      }
+    } else {
+      isOfflineMode = true;
+    }
+
     const pagesSnapshot = await getDocs(collection(db, "stories", storyIdVal, "pages"));
     const pages = [];
     pagesSnapshot.forEach((docSnap) => {
@@ -1512,7 +1531,7 @@ async function readSavedStory(storyIdVal) {
       throw new Error("No se encontraron páginas para este cuento.");
     }
     
-    bookPages = pages.map(p => {
+    allStoryPages = pages.map(p => {
       if (p.type === "story") {
         return {
           type: "story",
@@ -1521,13 +1540,16 @@ async function readSavedStory(storyIdVal) {
           pageNumber: p.pageIndex,
           words: p.words,
           audio: p.audio,
-          pageIndex: p.pageIndex
+          pageIndex: p.pageIndex,
+          chosenOptionId: p.chosenOptionId,
+          chosenOptionText: p.chosenOptionText
         };
       } else if (p.type === "dilemma") {
         return {
           type: "dilemma",
           dilemma: p.dilemma || {},
           chosenOptionId: p.chosenOptionId,
+          chosenOptionText: p.chosenOptionText,
           pageIndex: p.pageIndex
         };
       } else if (p.type === "ending") {
@@ -1538,15 +1560,19 @@ async function readSavedStory(storyIdVal) {
       }
     });
     
+    bookPages = JSON.parse(JSON.stringify(allStoryPages));
     currentPageIndex = 0;
     
-    const storySnap = await getDoc(doc(db, "stories", storyIdVal));
-    if (storySnap.exists()) {
-      document.getElementById("subtitle").textContent = storySnap.data().theme + " (guardado)";
+    const lastPage = allStoryPages[allStoryPages.length - 1];
+    if (lastPage && lastPage.type === "dilemma") {
+      currentDilemma = lastPage.dilemma;
+    } else {
+      currentDilemma = null;
     }
     
     const progressHtml = renderProgressHtml();
     document.getElementById("reader").innerHTML = progressHtml + renderBook();
+    updateNavButtons();
     showScreen("screen-reader");
     window.scrollTo(0, 0);
     
@@ -1617,7 +1643,7 @@ document.getElementById("login-btn-app")?.addEventListener("click", async () => 
 document.getElementById("logout-btn")?.addEventListener("click", async () => {
   try {
     await signOut(auth);
-    backToCreate();
+    window.location.href = "/";
   } catch (error) {
     console.error("Logout error:", error);
   }

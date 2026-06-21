@@ -14,20 +14,15 @@ body{
   background-image:radial-gradient(rgba(33,54,79,.05) 1px,transparent 1px);
   background-size:14px 14px;
 }
-.wrap{max-width:680px;margin:0 auto;padding:24px 18px 90px;transition:max-width .25s ease}
-.wrap-wide{max-width:1040px}
-/* En el dashboard, el logo se encoge para no robar tanto espacio vertical. */
-.wrap-wide header{margin:6px 0 12px}
-.wrap-wide .logo-img{width:min(150px,40%)}
-.wrap-wide .sub{font-size:14px}
-header{text-align:center;margin:18px 0 22px}
+.wrap{max-width:680px;margin:0 auto;padding:16px 18px 90px}
+header{text-align:center;margin:0 auto 10px}
 .wordmark{font-family:'Baloo 2',cursive;font-weight:800;font-size:54px;line-height:1}
 .wordmark .b{color:var(--blue-deep)} .wordmark .o{color:var(--orange)}
 .wordmark .g{color:var(--green)} .wordmark .p{color:var(--purple)} .wordmark .y{color:var(--yellow)}
 .wordmark .star{font-size:24px;vertical-align:super;margin-left:-6px}
 .sub{margin-top:6px;color:var(--blue-deep);font-weight:800;opacity:.85}
-.logo-img{display:block;width:min(380px,82%);height:auto;margin:0 auto}
-.mascot{display:block;width:min(220px,55%);height:auto;margin:0 auto -6px;
+.logo-img{display:block;width:min(380px,82%);height:auto;margin:-18% auto -12%}
+.mascot{display:block;width:min(180px,45%);height:auto;margin:-10px auto -20px;
   filter:drop-shadow(0 6px 0 rgba(46,22,143,.12))}
 
 .screen{display:none}
@@ -65,11 +60,11 @@ textarea{resize:vertical;min-height:60px}
   padding:14px;margin:18px 0;box-shadow:0 8px 0 rgba(33,54,79,.12);
 }
 .illus{
-  height:190px;border-radius:18px;border:2px solid var(--ink);
+  width:100%;aspect-ratio:16/9;border-radius:18px;border:2px solid var(--ink);
   background:linear-gradient(180deg,#DCC6FF,#FFF2DA);
   display:flex;align-items:center;justify-content:center;font-size:74px;position:relative;overflow:hidden;
 }
-.illus-img{width:100%;height:100%;object-fit:cover;display:block}
+.illus-img{width:100%;height:100%;object-fit:contain;display:block}
 .illus .star{position:absolute;color:#fff;opacity:.9;font-size:18px}
 .illus .tag{position:absolute;bottom:8px;right:10px;font-size:11px;color:var(--blue-deep);
   background:rgba(255,255,255,.7);padding:2px 8px;border-radius:10px}
@@ -99,9 +94,8 @@ body.dev .pole-tag{display:inline-block}
 .loading p{color:var(--blue-deep);font-size:18px}
 
 /* ---- modo papás ---- */
-.devbar{position:fixed;top:12px;right:12px;z-index:10}
-.parentbar{position:fixed;top:12px;left:12px;z-index:10}
-.devbar button,.parentbar button{font-family:'Nunito';font-weight:800;border:2px solid var(--ink);
+.parentbar{position:fixed;top:12px;right:12px;z-index:10}
+.parentbar button{font-family:'Nunito';font-weight:800;border:2px solid var(--ink);
   background:#fff;border-radius:14px;padding:8px 12px;cursor:pointer}
 
 /* dashboard */
@@ -285,11 +279,13 @@ body.dev .devlog{display:block}
 
 /* ---- user profile header ---- */
 .user-header-wrap {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
 }
 .user-badge {
   display: flex;
@@ -298,8 +294,9 @@ body.dev .devlog{display:block}
   background: #fff;
   border: 2px solid var(--ink);
   border-radius: 20px;
-  padding: 6px 14px;
-  box-shadow: 0 4px 0 rgba(46,22,143,.14);
+  padding: 0 14px;
+  height: 38px;
+  box-shadow: 0 3px 0 rgba(46,22,143,.14);
 }
 .user-avatar {
   width: 24px;
@@ -316,13 +313,21 @@ body.dev .devlog{display:block}
   text-overflow: ellipsis;
 }
 .btn-logout {
-  padding: 8px 12px;
+  font-family: 'Nunito', system-ui, sans-serif !important;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
   font-size: 14px;
-  border-radius: 14px;
+  border-radius: 20px;
   background: var(--pink);
   color: #fff;
   border: 2px solid var(--ink);
   box-shadow: 0 3px 0 rgba(33,54,79,.2);
+  cursor: pointer;
+  transition: transform .07s, box-shadow .07s;
 }
 
 /* ---- history section ---- */
@@ -940,4 +945,43 @@ body.dev .devlog{display:block}
 }
 .clinical-tab li {
   margin-bottom: 4px;
+}
+
+@media (max-width: 500px) {
+  .user-header-wrap {
+    top: 8px;
+    left: 8px;
+    gap: 6px;
+  }
+  .parentbar {
+    top: 8px;
+    right: 8px;
+  }
+  .user-badge {
+    padding: 0 8px;
+    height: 32px;
+    gap: 6px;
+  }
+  .user-avatar {
+    width: 20px;
+    height: 20px;
+  }
+  .user-name {
+    max-width: 70px;
+    font-size: 12px;
+  }
+  .btn-logout {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 12px;
+    border-radius: 16px;
+  }
+  .parentbar button {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
+  .wrap {
+    padding-top: 48px;
+  }
 }

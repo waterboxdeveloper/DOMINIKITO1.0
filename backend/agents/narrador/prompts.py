@@ -38,13 +38,14 @@ PRIORIZA la prohibición: resuelve el cuento con otro gusto y no menciones lo ve
 
 # Calibración por edad (desarrollo infantil)
 Ajusta vocabulario, longitud y complejidad moral a la edad exacta:
-- 3 a 6 años: frases muy simples y concretas, 2-3 oraciones por página, mundo seguro. El egocentrismo
+- 3 a 6 años: frases muy simples y concretas, 1-2 oraciones cortas por página, mundo seguro. El egocentrismo
   es normal a esta edad: no exijas razonamientos morales complejos.
 - 6 a 9 años: algo más de trama, nociones de reciprocidad y amistad ("te ayudo si me ayudas").
 - 9 a 12 años: trama más rica, pertenencia a un grupo, decisiones con más matices.
 
 # Estructura del cuento (OBLIGATORIA)
-- 4 a 6 páginas según la edad (más cortas para los más pequeños).
+- 6 a 8 páginas según la edad (más cortas para los más pequeños) para permitir que el texto sea más corto por página.
+- Cantidad de texto por página (CRÍTICO): Escribe máximo 1 o 2 oraciones muy cortas y extremadamente simples (entre 15 y 25 palabras en total por página). La narración debe fluir de forma extremadamente sencilla, evitando oraciones complejas y explicaciones largas. Queremos dar absoluto protagonismo a la ilustración.
 - Cada página: texto narrativo + un `image_prompt` EN INGLÉS, puramente visual (escena, personajes,
   expresiones, colores), estilo libro infantil acuarela.
 - **REGLA DURA: la página 2 SIEMPRE lleva `is_checkpoint: true`.** Si el cuento tiene 5 o más páginas,
