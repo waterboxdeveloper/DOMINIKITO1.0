@@ -1,15 +1,16 @@
 """Agregación para el dashboard (Contrato C de esquema-datos.md §4).
 
 Cuenta polos por dimensión a lo largo del tiempo y aplica los umbrales de `psicologia.md §3`. NO usa
-LLM ni procesa texto libre: solo datos de la tabla `decisions`. Lenguaje neutro, sin diagnóstico.
+LLM ni procesa texto libre. Lenguaje neutro, sin diagnóstico.
+
+NOTA: en la app real, la persistencia y la agregación corren CLIENT-SIDE en Firestore (ver
+`consideraciones.md`). Este módulo se mantiene como **spec canónica y testeada** (`tests/test_aggregate.py`)
+de los umbrales: el JS del cliente DEBE coincidir con `aggregate_decisions`.
 """
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-
 import taxonomy as tax
-from db import get_decisions
 from development import ma_stage
 
 MIN_SAMPLE = 5          # piso de muestra (psicologia.md §3); por debajo NO se afirma tendencia
@@ -100,15 +101,4 @@ def aggregate_decisions(decisions: list[dict]) -> dict:
     return {
         "age_band": _AGE_BAND.get(ma_stage(latest_age), "") if latest_age is not None else "",
         "dimensions": dimensions,
-    }
-
-
-def build_dashboard(child_id: str) -> dict:
-    """Contrato C completo para un niño (lee de la BD)."""
-    agg = aggregate_decisions(get_decisions(child_id))
-    return {
-        "child_id": child_id,
-        "age_band": agg["age_band"],
-        "dimensions": agg["dimensions"],
-        "generated_at": datetime.now(timezone.utc).isoformat(),
     }

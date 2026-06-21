@@ -5,4 +5,3 @@ pydantic            # schemas (Story, ChildProfile)
 python-dotenv       # cargar backend/.env
 pytest              # tests deterministas y en vivo
 elevenlabs          # texto a voz (narración del cuento)
-supabase            # persistencia (niños, cuentos, decisiones) + dashboard
